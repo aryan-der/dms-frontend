@@ -1,8 +1,84 @@
-import { Sidebar } from '../ui/sidebar'
+import * as React from "react"
+import { GalleryVerticalEnd } from "lucide-react"
 
-const AdminSidebar = () => {
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenuButton,
+    SidebarRail,
+} from "@/components/ui/sidebar"
+import { NavProjects } from "../nav-projects"
+import { NavUser } from "../nav-user"
+import { MdFolderShared } from "react-icons/md";
+import { IoHome } from "react-icons/io5";
+import { FaHardDrive } from "react-icons/fa6";
+import { BsStarFill } from "react-icons/bs";
+import { FaTrashRestore } from "react-icons/fa";
+import { adminRoute } from "@/const/route"
+
+const data = {
+    teams: [
+        {
+            name: "Document Management System",
+            logo: <GalleryVerticalEnd />,
+            plan: "Enterprise",
+        },
+    ],
+    projects: [
+        {
+            name: "Home",
+            url: adminRoute.dashboard.base,
+            icon: IoHome
+        },
+        {
+            name: "My Drive",
+            url: "#",
+            icon: FaHardDrive,
+        },
+        {
+            name: "Shared with me",
+            url: "#",
+            icon: MdFolderShared,
+        },
+        {
+            name: "Favourite",
+            url: adminRoute.favourite.base,
+            icon: BsStarFill,
+        },
+        {
+            name: "Trash",
+            url: adminRoute.trash.base,
+            icon: FaTrashRestore,
+        },
+    ]
+}
+
+function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
-        <div><Sidebar /></div>
+        <Sidebar collapsible="icon" {...props}>
+            <SidebarHeader>
+                <SidebarMenuButton
+                    size="lg"
+                    className="data-[state=open]:bg-sidebar-accent p-2 data-[state=open]:text-sidebar-accent-foreground"
+                >
+                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                        <GalleryVerticalEnd />
+                    </div>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-bold text-md">Document System</span>
+                    </div>
+                </SidebarMenuButton>
+            </SidebarHeader>
+            <SidebarContent>
+                <NavProjects projects={data.projects} />
+            </SidebarContent>
+            <SidebarFooter>
+                <NavUser />
+            </SidebarFooter>
+            <SidebarRail />
+        </Sidebar>
     )
 }
 

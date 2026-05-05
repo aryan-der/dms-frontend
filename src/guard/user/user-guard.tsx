@@ -23,7 +23,6 @@ const AdminGuard = ({ children }: { children: ReactNode }) => {
             return
         }
         if (user.role !== "User") {
-            setUser(user)
             navigate(adminRoute.dashboard.base)
             return
         }

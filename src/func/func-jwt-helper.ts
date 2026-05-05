@@ -7,7 +7,7 @@ type jwtType = {
 export const isTokenExpired = (token: string) => {
   try {
     const decoded = jwtDecode<jwtType>(token)
-    return decoded.exp * 100 < Date.now()
+    return decoded.exp * 1000 < Date.now()
   } catch {
     return true
   }

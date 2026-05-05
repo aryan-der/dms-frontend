@@ -63,6 +63,7 @@ export function LoginForm({
             <FieldLabel htmlFor="password">Password</FieldLabel>
             <a
               href="#"
+              tabIndex={-1}
               className="ml-auto text-sm underline-offset-4 hover:underline"
             >
               Forgot your password?

@@ -1,8 +1,9 @@
 export const authEndpoint = {
-  login: "/auth/login",
+  login: "/Auth/Login",
   refreshToken: "/Login/RefreshToken",
   logout: "/Login/Logout",
   forgotPassword: "/Login/ForgotPassword",
+  resetPassword: "/Login/ResetPassword",
 }
 
 export const folderEndpoint = {
