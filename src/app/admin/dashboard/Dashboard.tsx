@@ -1,8 +1,11 @@
-import React from 'react'
+import FolderCard from "@/components/dashboard/folder-card"
 
 const Dashboard = () => {
     return (
-        <div>Dashboard</div>
+        <div>
+            <h1 className="text-2xl text-center">Welcome to SecureDrive!</h1>
+            <FolderCard />
+        </div>
     )
 }
 

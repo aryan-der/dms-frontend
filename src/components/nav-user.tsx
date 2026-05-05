@@ -95,7 +95,7 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem className="cursor-pointer" onClick={() => handleLogout()}>
+            <DropdownMenuItem className="cursor-pointer" variant="destructive" onClick={() => handleLogout()}>
               <LogOutIcon
               />
               {isPending ? "Logging out" : "Log out"}

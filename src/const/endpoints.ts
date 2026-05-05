@@ -7,22 +7,29 @@ export const authEndpoint = {
 }
 
 export const folderEndpoint = {
-  addFolder: "/FolderDetails/Create",
-  updateFolder: "/FolderDetails/Update",
-  getFolders: "/FolderDetails/Get",
-  getFolderById: ({ folderId }: { folderId: string | number }) => {
-    return `/FolderDetails/GetById?Id=${String(folderId)}`
-  },
-  deleteFolder: "/FolderDetails/Delete",
-  getFolderContent: ({
-    parentFolderId,
-  }: {
-    parentFolderId: string | number
-  }) => {
-    return `/FolderDetails/GetFolderContent?parentFolderId=${String(parentFolderId)}`
-  },
-  getTrashFolderData: "/FolderDetails/GetTrashData",
-  addOrUpdateColor: "/FolderDetails/AddOrUpdateColor",
+  // Create a new folder
+  addFolder: "/folders",
+  // Favorite or unfavorite a folder
+  favoriteFolder: ({ folderId }: { folderId: string | number }) =>
+    `/api/folders/${folderId}/favorite`,
+  // Soft-delete a folder (move to trash)
+  deleteFolder: ({ folderId }: { folderId: string | number }) =>
+    `/api/folders/${folderId}`,
+  // Rename a folder
+  renameFolder: ({ folderId }: { folderId: string | number }) =>
+    `/api/folders/${folderId}/rename`,
+  // Move a folder to another parent folder
+  moveFolder: ({ folderId }: { folderId: string | number }) =>
+    `/api/folders/${folderId}/move`,
+  // Add a comment to a folder
+  addFolderComment: ({ folderId }: { folderId: string | number }) =>
+    `/api/folders/${folderId}/comments`,
+  // Upload entire folder
+  uploadFolder: ({ folderId }: { folderId: string | number }) =>
+    `/api/folders/${folderId}/upload`,
+  // Download entire folder
+  downloadFolder: ({ folderId }: { folderId: string | number }) =>
+    `/api/folders/${folderId}/download`,
 }
 
 export const fileEndpoint = {

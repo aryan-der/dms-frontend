@@ -1,3 +1,4 @@
+import Navbar from "@/components/navigation/navbar"
 import UserSidebar from "@/components/navigation/user-sidebar"
 import { Outlet } from "react-router-dom"
 
@@ -6,6 +7,7 @@ const UserRoute = () => {
         <div className="flex min-h-screen w-full">
             <UserSidebar />
             <div className="flex min-w-0 flex-1 flex-col">
+                <Navbar />
                 <div className="custom-scroll min-w-0 flex-1 overflow-auto bg-primary/4 p-4 md:p-6">
                     <Outlet />
                 </div>

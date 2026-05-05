@@ -60,7 +60,7 @@ export async function funcFetch<T = any>({
       if (res.status === 401 && !_retry) {
         if (!user?.refreshToken) {
           localStorage.removeItem("login-data")
-          window.location.href = "/login"
+          window.location.href = "/"
           throw new Error("Session expired")
         }
 
@@ -91,7 +91,7 @@ export async function funcFetch<T = any>({
           })
         } catch {
           localStorage.removeItem("login-data")
-          window.location.href = "/login"
+          window.location.href = "/"
           throw new Error("Session expired")
         }
       }
