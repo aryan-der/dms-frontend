@@ -48,7 +48,7 @@ export function LoginForm({
           </p>
         </div>
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel htmlFor="email">Emaill</FieldLabel>
           <Input
             id="email"
             // type="email"
