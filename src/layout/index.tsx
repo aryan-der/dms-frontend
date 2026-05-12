@@ -37,8 +37,7 @@ const Layout = () => {
                 </AdminGuard>
             }>
                 {/* Dashboard */}
-                <Route path={adminChildRoute.dashboard} element={<Dashboard />} />
-                <Route path={`${adminChildRoute.dashboard}/:folderId`} element={<Dashboard />} />
+                <Route path={`${adminChildRoute.dashboard}/:parentFolderIds?`} element={<Dashboard />} />
                 <Route path={adminChildRoute.users} element={<Users />} />
                 <Route path={adminChildRoute.favourite} element={<Favourite />} />
                 <Route path={adminChildRoute.trash} element={<Trash />} />

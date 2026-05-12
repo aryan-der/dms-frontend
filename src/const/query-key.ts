@@ -4,7 +4,7 @@ export const folderQueryKey = {
     return ["folder", folderId]
   },
   folderContent: ({ parentFolderId }: { parentFolderId: string | number }) => {
-    return ["folder", "content", `${parentFolderId ? parentFolderId : "-"}`]
+    return ["folder", "content", `${parentFolderId ? parentFolderId : ""}`]
   },
   trashFolders: ["folders", "trash"],
 }
@@ -29,21 +29,4 @@ export const fileQueryKey = {
   }) => {
     return ["file", fileId, filePath, pageNumber]
   },
-}
-
-export const userQueryKey = {
-  users: ["users"],
-  user: ({ userId }: { userId: string | number }) => {
-    return ["user", userId]
-  },
-  dashBoardCount: ["dashboard-count"],
-  storage: ["storage"],
-  permission: ["user-permissions"],
-}
-
-export const userRightsQueryKey = {
-  favourites: ["favourites"],
-  storage: ["storage"],
-  move: ["MoveFoldeOrFile"],
-  DownloadFolderFiles: ["DownloadFolderFiles"],
 }

@@ -1,4 +1,4 @@
-import { Bell, FolderPlus, Upload, UploadCloud } from "lucide-react";
+import { Bell, FolderPlus } from "lucide-react";
 import { Button } from "../ui/button";
 import {
     Sheet,
@@ -10,13 +10,11 @@ import {
 } from "../ui/sheet";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Input } from "../ui/input";
-import CreateFolder from "../dashboard/comp/create-folder";
+import CreateUploadButtons from "../dashboard/comp/create-upload-buttons";
 
 const Navbar = () => {
     return (
@@ -47,46 +45,7 @@ const Navbar = () => {
                             New <FolderPlus className="w-8 h-8" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                        <CreateFolder>
-                            <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onSelect={(e) => e.preventDefault()}>
-                                <FolderPlus className="w-4 h-4" /> Create Folder
-                            </DropdownMenuItem>
-                        </CreateFolder>
-
-                        <DropdownMenuItem
-                            className="flex items-center gap-2 cursor-pointer"
-                            onSelect={e => {
-                                e.preventDefault();
-                                document.getElementById('upload-folder-input')?.click();
-                            }}
-                        >
-                            <UploadCloud className="w-4 h-4" /> Upload Folder
-                            <input
-                                id="upload-folder-input"
-                                type="file"
-                                style={{ display: 'none' }}
-                                // @ts-expect-error
-                                webkitdirectory="true"
-                            />
-                        </DropdownMenuItem>
-
-                        <DropdownMenuItem
-                            className="flex items-center gap-2 cursor-pointer"
-                            onSelect={e => {
-                                e.preventDefault();
-                                document.getElementById('upload-files-input')?.click();
-                            }}
-                        >
-                            <Upload className="w-4 h-4" /> Upload File
-                            <input
-                                id="upload-files-input"
-                                type="file"
-                                style={{ display: 'none' }}
-                                multiple
-                            />
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
+                    <CreateUploadButtons />
                 </DropdownMenu>
                 <Sheet>
                     <SheetTrigger asChild>

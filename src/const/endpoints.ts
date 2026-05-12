@@ -9,31 +9,47 @@ export const authEndpoint = {
 export const folderEndpoint = {
   // Create a new folder
   addFolder: "/folders",
+
+  // Get folders/files content
+  getFolderContent: ({
+    parentFolderId,
+  }: {
+    parentFolderId?: string | number | null
+  }) =>
+    parentFolderId
+      ? `/folders/content?parentFolderId=${parentFolderId}`
+      : `/folders/content`,
+
   // Favorite or unfavorite a folder
   favoriteFolder: ({ folderId }: { folderId: string | number }) =>
     `/api/folders/${folderId}/favorite`,
-  // Soft-delete a folder (move to trash)
+
+  // Soft-delete a folder
   deleteFolder: ({ folderId }: { folderId: string | number }) =>
     `/api/folders/${folderId}`,
+
   // Rename a folder
   renameFolder: ({ folderId }: { folderId: string | number }) =>
     `/api/folders/${folderId}/rename`,
-  // Move a folder to another parent folder
+
+  // Move folder
   moveFolder: ({ folderId }: { folderId: string | number }) =>
     `/api/folders/${folderId}/move`,
-  // Add a comment to a folder
+
+  // Add comment
   addFolderComment: ({ folderId }: { folderId: string | number }) =>
     `/api/folders/${folderId}/comments`,
-  // Upload entire folder
-  uploadFolder: ({ folderId }: { folderId: string | number }) =>
-    `/api/folders/${folderId}/upload`,
-  // Download entire folder
+
+  // Upload folder
+  uploadFolder: "/folders/upload",
+
+  // Download folder
   downloadFolder: ({ folderId }: { folderId: string | number }) =>
     `/api/folders/${folderId}/download`,
 }
 
 export const fileEndpoint = {
-  addFile: "/FileDetails/Create",
+  addFile: "/files/upload-file",
   getFiles: "/FileDetails/Get",
   getFileById: ({ fileId }: { fileId: string | number }) => {
     return `/FileDetails/GetById?Id=${String(fileId)}`
