@@ -3,10 +3,10 @@ import CreateFolder from './create-folder';
 import { FolderPlus, Upload, UploadCloud } from 'lucide-react';
 import UploadFolder from './upload-folder';
 import UploadFile from './upload-file';
-import { useParentFolderId } from '@/context/folder/folder-id-context';
+import { useParams } from 'react-router-dom';
 
 const CreateUploadButtons = () => {
-    const { parentFolderId } = useParentFolderId()
+    const { parentFolderId } = useParams();
     return (
         <div>
             <DropdownMenuContent align="end" className="w-48">

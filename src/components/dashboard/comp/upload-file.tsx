@@ -1,5 +1,6 @@
 import useFile from "@/hooks/use-files";
 import React from "react";
+import { useParams } from "react-router-dom";
 
 type UploadFileProps = {
     children: React.ReactNode;
@@ -12,7 +13,6 @@ const UploadFile = ({
 }: UploadFileProps) => {
 
     const { useFileUpload } = useFile();
-
     const uploadFileMutation = useFileUpload();
 
     // Handle upload file
@@ -46,6 +46,7 @@ const UploadFile = ({
             uploadFileMutation.mutate(
                 formData
             );
+
         });
 
         e.target.value = "";

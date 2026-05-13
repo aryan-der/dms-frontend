@@ -16,51 +16,45 @@ import {
 
 import { useState } from "react";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { adminRoute } from "@/const/route";
 import { BreadcrumbComponent } from "../common/Breadcrumb";
+import Loader from "../common/Loader";
 
 const DashboardExplorer = () => {
-
     const { useGetContent } = useFolder();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    const { parentFolderIds: routeFolderId } = useParams();
+    const { parentFolderId: routeFolderId } = useParams();
 
     const {
         data,
         isPending,
-        isFetching
+        isFetching,
     } = useGetContent({
         parentFolderId: routeFolderId,
     });
 
-    const [folderOpen, setFolderOpen] =
-        useState(true);
+    const [folderOpen, setFolderOpen] = useState(true);
+    const [fileOpen, setFileOpen] = useState(true);
 
-    const [fileOpen, setFileOpen] =
-        useState(true);
-
-    const handleOpenFile = (
-        fileId: string
-    ) => {
+    const handleOpenFile = (fileId: string) => {
         console.log("Open file:", fileId);
     };
 
+    if (isPending || isFetching) {
+        return <Loader />
+    }
+
     return (
         <div className="space-y-6">
-
-            {/* Bredcumb */}
+            {/* Breadcrumb */}
             <div className="w-full flex justify-end">
                 <BreadcrumbComponent />
             </div>
-            {/* FOLDERS */}
-            <Collapsible
-                open={folderOpen}
-                onOpenChange={setFolderOpen}
-            >
 
+            {/* FOLDERS */}
+            <Collapsible open={folderOpen} onOpenChange={setFolderOpen}>
                 <CollapsibleTrigger
                     className="
                         w-full
@@ -77,9 +71,7 @@ const DashboardExplorer = () => {
                         cursor-pointer
                     "
                 >
-
                     <div className="flex items-center gap-2">
-
                         <Folder
                             className="
                                 w-5
@@ -87,11 +79,9 @@ const DashboardExplorer = () => {
                                 text-yellow-500
                             "
                         />
-
                         <h2 className="font-semibold text-lg">
                             Folders
                         </h2>
-
                         <span
                             className="
                                 text-xs
@@ -101,75 +91,27 @@ const DashboardExplorer = () => {
                                 rounded-full
                             "
                         >
-                            {
-                                data?.data?.folders
-                                    ?.length || 0
-                            }
+                            {data?.data?.folders?.length || 0}
                         </span>
                     </div>
-
-                    {
-                        folderOpen
-                            ? (
-                                <ChevronDown
-                                    className="w-5 h-5"
-                                />
-                            )
-                            : (
-                                <ChevronRight
-                                    className="w-5 h-5"
-                                />
-                            )
-                    }
+                    {folderOpen ? (
+                        <ChevronDown className="w-5 h-5" />
+                    ) : (
+                        <ChevronRight className="w-5 h-5" />
+                    )}
                 </CollapsibleTrigger>
-
-                <CollapsibleContent
-                    className="pt-4"
-                >
-                    {
-                        isPending || isFetching
-                            ? (
-                                <div className="flex flex-wrap gap-3">
-
-                                    {
-                                        Array.from({
-                                            length: 8,
-                                        }).map((_, index) => (
-                                            <Skeleton
-                                                key={index}
-                                                className="
-                                                    h-12
-                                                    w-[180px]
-                                                    rounded-md
-                                                "
-                                            />
-                                        ))
-                                    }
-                                </div>
-                            )
-                            : (
-                                <FolderCard
-                                    folders={
-                                        data?.data
-                                            ?.folders || []
-                                    }
-                                    onOpenFolder={
-                                        (folderId) => {
-                                            navigate(`${adminRoute.dashboard.base}/${folderId}`)
-                                        }
-                                    }
-                                />
-                            )
-                    }
+                <CollapsibleContent className="pt-4">
+                    <FolderCard
+                        folders={data?.data?.folders || []}
+                        onOpenFolder={(folderId) => {
+                            navigate(`${adminRoute.dashboard.base}/${folderId}`);
+                        }}
+                    />
                 </CollapsibleContent>
             </Collapsible>
 
             {/* FILES */}
-            <Collapsible
-                open={fileOpen}
-                onOpenChange={setFileOpen}
-            >
-
+            <Collapsible open={fileOpen} onOpenChange={setFileOpen}>
                 <CollapsibleTrigger
                     className="
                         w-full
@@ -186,9 +128,7 @@ const DashboardExplorer = () => {
                         cursor-pointer
                     "
                 >
-
                     <div className="flex items-center gap-2">
-
                         <FileText
                             className="
                                 w-5
@@ -196,11 +136,9 @@ const DashboardExplorer = () => {
                                 text-blue-500
                             "
                         />
-
                         <h2 className="font-semibold text-lg">
                             Files
                         </h2>
-
                         <span
                             className="
                                 text-xs
@@ -210,92 +148,22 @@ const DashboardExplorer = () => {
                                 rounded-full
                             "
                         >
-                            {
-                                data?.data?.files
-                                    ?.length || 0
-                            }
+                            {data?.data?.files?.length || 0}
                         </span>
                     </div>
-
-                    {
-                        fileOpen
-                            ? (
-                                <ChevronDown
-                                    className="w-5 h-5"
-                                />
-                            )
-                            : (
-                                <ChevronRight
-                                    className="w-5 h-5"
-                                />
-                            )
-                    }
+                    {fileOpen ? (
+                        <ChevronDown className="w-5 h-5" />
+                    ) : (
+                        <ChevronRight className="w-5 h-5" />
+                    )}
                 </CollapsibleTrigger>
-
-                <CollapsibleContent
-                    className="pt-4"
-                >
-
-                    {
-                        isPending || isFetching
-                            ? (
-                                <div className="flex flex-wrap gap-3">
-
-                                    {
-                                        Array.from({
-                                            length: 6,
-                                        }).map((_, index) => (
-                                            <Skeleton
-                                                key={index}
-                                                className="
-                                                    h-12
-                                                    w-[220px]
-                                                    rounded-md
-                                                "
-                                            />
-                                        ))
-                                    }
-                                </div>
-                            )
-                            : (
-                                <FileCard
-                                    files={
-                                        data?.data
-                                            ?.files || []
-                                    }
-                                    onOpenFile={
-                                        handleOpenFile
-                                    }
-                                />
-                            )
-                    }
+                <CollapsibleContent className="pt-4">
+                    <FileCard
+                        files={data?.data?.files || []}
+                        onOpenFile={handleOpenFile}
+                    />
                 </CollapsibleContent>
             </Collapsible>
-
-            {/* BACK BUTTON */}
-            {
-                routeFolderId && (
-                    <button
-                        className="
-                            mt-4
-                            px-4
-                            py-2
-                            rounded-md
-                            bg-muted
-                            hover:bg-muted/70
-                            transition-all
-                            text-sm
-                            font-medium
-                            cursor-pointer
-                        "
-                        onClick={() => {
-                            navigate(-1)
-                        }}
-                    >
-                        Back to root
-                    </button>
-                )
-            }
         </div>
     );
 };

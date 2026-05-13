@@ -3,16 +3,16 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Field, FieldGroup } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useParentFolderId } from '@/context/folder/folder-id-context'
 import useFolder from '@/hooks/use-folder'
 import { useState, type ReactNode } from 'react'
+import { useParams } from 'react-router-dom'
 
 const CreateFolder = ({ children }: { children: ReactNode }) => {
     const [folderName, setFolderName] = useState("")
     const [open, setOpen] = useState(false)
-    const { parentFolderId } = useParentFolderId()
     const { useCreateFolder } = useFolder()
     const { mutate, isPending } = useCreateFolder()
+    const { parentFolderId = null } = useParams()
 
     // handle open/close dialog and clear name
     const handleDialogOpenChange = (isOpen: boolean) => {

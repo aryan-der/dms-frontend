@@ -3,7 +3,11 @@ export const folderQueryKey = {
   folder: ({ folderId }: { folderId: string | number }) => {
     return ["folder", folderId]
   },
-  folderContent: ({ parentFolderId }: { parentFolderId: string | number }) => {
+  folderContent: ({
+    parentFolderId,
+  }: {
+    parentFolderId: string | number | null
+  }) => {
     return ["folder", "content", `${parentFolderId ? parentFolderId : ""}`]
   },
   trashFolders: ["folders", "trash"],

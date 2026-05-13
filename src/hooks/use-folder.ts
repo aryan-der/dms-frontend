@@ -1,6 +1,7 @@
 import { folderEndpoint } from "@/const/endpoints"
 import { folderQueryKey } from "@/const/query-key"
 import { funcFetch } from "@/func/func-fetch"
+import type { BreadcrumbType } from "@/types/data/bredcrumb-types"
 import type { FileType } from "@/types/data/file-types"
 import type { FolderType } from "@/types/data/folder-types"
 import type { createFolderPayloadType } from "@/types/payload/cretae-folder-types"
@@ -82,13 +83,60 @@ export default function useFolder() {
           ResTypes<{
             folders: FolderType[]
             files: FileType[]
+            breadcrumb: BreadcrumbType[]
           }>
         >,
+    })
+
+  const useDeleteFolder = () =>
+    useMutation({
+      mutationFn: (body) =>
+        funcFetch({
+          endPoint: folderEndpoint.deleteFolder,
+          method: "DELETE",
+          body,
+        }),
+      onSuccess: (data) => {
+        QueryClient.invalidateQueries({
+          queryKey: folderQueryKey.folders,
+        })
+        toast.success(data?.message)
+      },
+      onError: (error) => {
+        toast.error(error?.message)
+      },
+    })
+
+  const useUpdateFolder = () =>
+    useMutation({
+      mutationFn: ({
+        folderId,
+        ...body
+      }: {
+        folderId: string | number | null
+        [key: string]: unknown
+      }) =>
+        funcFetch({
+          endPoint: folderEndpoint.updateFolder({ folderId }),
+          method: "PUT",
+          body,
+        }),
+      onSuccess: (data) => {
+        QueryClient.invalidateQueries({
+          queryKey: folderQueryKey.folders,
+        })
+        toast.success(data?.message)
+      },
+      onError: (error) => {
+        toast.error(error?.message)
+      },
     })
 
   return {
     useCreateFolder,
     useGetContent,
     useUploadFolder,
+    useDeleteFolder,
+    useUpdateFolder,
   }
 }
