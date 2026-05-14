@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/sidebar"
 import { NavProjects } from "../nav-projects"
 import { NavUser } from "../nav-user"
-import { MdFolderShared } from "react-icons/md";
+import { MdFolderShared, MdAudiotrack } from "react-icons/md";
 import { IoHome } from "react-icons/io5";
 import { FaHardDrive } from "react-icons/fa6";
 import { BsStarFill } from "react-icons/bs";
-import { FaTrashRestore } from "react-icons/fa";
+import { FaTrashRestore } from "react-icons/fa"
+import { BiSolidVideos } from "react-icons/bi";;
+import { IoMdPhotos } from "react-icons/io";
 import { adminRoute } from "@/const/route"
 
 const data = {
@@ -33,9 +35,24 @@ const data = {
             icon: IoHome
         },
         {
-            name: "My Drive",
+            name: "Documents",
             url: "#",
             icon: FaHardDrive,
+        },
+        {
+            name: "Photos",
+            url: "#",
+            icon: IoMdPhotos,
+        },
+        {
+            name: "Videos",
+            url: "#",
+            icon: BiSolidVideos,
+        },
+        {
+            name: "Audios",
+            url: "#",
+            icon: MdAudiotrack,
         },
         {
             name: "Shared with me",
