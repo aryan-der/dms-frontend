@@ -1,13 +1,14 @@
 import { fileEndpoint } from "@/const/endpoints"
-import { folderQueryKey } from "@/const/query-key"
+import { fileQueryKey, folderQueryKey } from "@/const/query-key"
 import { funcFetch } from "@/func/func-fetch"
 import type { FileType } from "@/types/data/file-types"
 import type { ResTypes } from "@/types/res/res-types"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 export default function useFile() {
   const QueryClient = useQueryClient()
+
   const useFileUpload = () =>
     useMutation({
       mutationFn: (formData: FormData) =>
@@ -32,7 +33,17 @@ export default function useFile() {
       },
     })
 
+  const useFileViewer = ({ fileId }: { fileId: string | number }) =>
+    useQuery({
+      queryKey: fileQueryKey.file({ fileId }),
+      queryFn: () =>
+        funcFetch({
+          endPoint: fileEndpoint.viewFile(String(fileId)),
+        }) as Promise<ResTypes<FileType>>,
+    })
+
   return {
     useFileUpload,
+    useFileViewer,
   }
 }

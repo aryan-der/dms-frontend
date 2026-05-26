@@ -9,6 +9,8 @@ import {
     FiMoreVertical,
     FiChevronRight,
 } from "react-icons/fi"
+import FolderRename from "./folder-rename"
+import type { FolderType } from "@/types/data/folder-types"
 
 type MenuItem =
     | {
@@ -22,54 +24,65 @@ type MenuItem =
     }
     | { type: "divider" }
 
-const menuGroups: MenuItem[][] = [
-    [
-        { type: "item", label: "Download", icon: <FiDownload size={14} /> },
-        {
-            type: "item",
-            label: "Rename",
-            icon: <FiEdit2 size={14} />,
-            right: "Ctrl+Alt+E",
-        },
-    ],
-    [
-        {
-            type: "item",
-            label: "Share",
-            icon: <FiShare2 size={14} />,
-            hasSubmenu: true,
-        },
-        {
-            type: "item",
-            label: "Organize",
-            icon: <FiFolderPlus size={14} />,
-            hasSubmenu: true,
-        },
-        {
-            type: "item",
-            label: "Folder information",
-            icon: <FiInfo size={14} />,
-            hasSubmenu: true,
-        },
-    ],
-    [
-        {
-            type: "item",
-            label: "Move to trash",
-            icon: <FiTrash2 size={14} />,
-            right: "Delete",
-            danger: true,
-        },
-    ],
-]
+interface DropdownItemsProps {
+    folder: FolderType
+    onSelectFolder?: (folderId: string) => void
+}
 
-const DropdownItems = () => {
+const DropdownItems = ({
+    folder,
+    onSelectFolder,
+}: DropdownItemsProps) => {
     const [open, setOpen] = useState(false)
-
+    const [showRename, setShowRename] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
-    const closeTimeout = useRef<NodeJS.Timeout | null>(null)
+    const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const _id = folder?._id
+    const name = folder?.name
+    const menuGroups: MenuItem[][] = [
+        [
+            { type: "item", label: "Download", icon: <FiDownload size={14} /> },
+            {
+                type: "item",
+                label: "Rename",
+                icon: <FiEdit2 size={14} />,
+                right: "Ctrl+Alt+E",
+                onClick: () => {
+                    setShowRename(true)
+                },
+            },
+        ],
+        [
+            {
+                type: "item",
+                label: "Share",
+                icon: <FiShare2 size={14} />,
+                hasSubmenu: true,
+            },
+            {
+                type: "item",
+                label: "Organize",
+                icon: <FiFolderPlus size={14} />,
+                hasSubmenu: true,
+            },
+            {
+                type: "item",
+                label: "Folder information",
+                icon: <FiInfo size={14} />,
+                hasSubmenu: true,
+            },
+        ],
+        [
+            {
+                type: "item",
+                label: "Move to trash",
+                icon: <FiTrash2 size={14} />,
+                right: "Delete",
+                danger: true,
+            },
+        ],
+    ]
 
-    // Outside click close
     useEffect(() => {
         const handler = (e: MouseEvent) => {
             if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -84,18 +97,24 @@ const DropdownItems = () => {
         }
     }, [])
 
-    // Mouse leave → close dropdown
     const handleMouseLeave = () => {
         closeTimeout.current = setTimeout(() => {
             setOpen(false)
         }, 120)
     }
 
-    // Mouse enter → stop close
     const handleMouseEnter = () => {
         if (closeTimeout.current) {
             clearTimeout(closeTimeout.current)
         }
+    }
+
+    const handleMenuClick = () => {
+        // User action: select this folder
+        if (typeof onSelectFolder === "function") {
+            onSelectFolder(_id)
+        }
+        setOpen((prev) => !prev)
     }
 
     return (
@@ -107,7 +126,7 @@ const DropdownItems = () => {
         >
             {/* Trigger */}
             <button
-                onClick={() => setOpen((prev) => !prev)}
+                onClick={handleMenuClick}
                 className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border/40 bg-background text-muted-foreground transition-all duration-100 hover:bg-muted hover:text-foreground ${open ? "bg-muted text-foreground" : ""} `}
             >
                 <FiMoreVertical size={15} />
@@ -176,6 +195,15 @@ const DropdownItems = () => {
                         </div>
                     ))}
                 </div>
+            )}
+
+            {showRename && (
+                <FolderRename
+                    open={showRename}
+                    onOpenChange={setShowRename}
+                    folderId={_id}
+                    currentName={name}
+                />
             )}
 
             <style>{`

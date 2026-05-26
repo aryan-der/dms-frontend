@@ -20,6 +20,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { adminRoute } from "@/const/route";
 import { BreadcrumbComponent } from "../common/Breadcrumb";
 import Loader from "../common/Loader";
+import { Dialog, DialogContent } from "../ui/dialog";
+import PdfViewer from "../common/pdf-viewer";
 
 const DashboardExplorer = () => {
     const { useGetContent } = useFolder();
@@ -37,9 +39,12 @@ const DashboardExplorer = () => {
 
     const [folderOpen, setFolderOpen] = useState(true);
     const [fileOpen, setFileOpen] = useState(true);
+    const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
 
-    const handleOpenFile = (fileId: string) => {
-        console.log("Open file:", fileId);
+    const handleOpenFile = (
+        fileId: string
+    ) => {
+        setSelectedFileId(fileId);
     };
 
     if (isPending || isFetching) {
@@ -164,6 +169,28 @@ const DashboardExplorer = () => {
                     />
                 </CollapsibleContent>
             </Collapsible>
+
+            <Dialog
+                open={!!selectedFileId}
+                onOpenChange={() =>
+                    setSelectedFileId(null)
+                }
+            >
+                <DialogContent
+                    className="
+         max-w-7xl
+         h-[95vh]
+         p-0
+         overflow-hidden
+      "
+                >
+                    {selectedFileId && (
+                        <PdfViewer
+                            fileId={selectedFileId}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

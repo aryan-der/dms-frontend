@@ -26,9 +26,10 @@ export const folderEndpoint = {
   deleteFolder: "/folders/delete-folders",
 
   updateFolder: ({ folderId }: { folderId: string | number | null }) =>
-    `/update-folder/${folderId}`,
+    `/folders/update-folder/${folderId}`,
 }
 
 export const fileEndpoint = {
   addFile: "/files/upload",
+  viewFile: (id: string) => `/files/view/${id}`,
 }

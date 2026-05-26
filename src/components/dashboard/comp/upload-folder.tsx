@@ -1,6 +1,6 @@
-import { useParentFolderId } from "@/context/folder/folder-id-context";
 import useFolder from "@/hooks/use-folder";
 import React from "react";
+import { useParams } from "react-router-dom";
 
 type UploadFolderProps = {
     children: React.ReactNode;
@@ -11,9 +11,10 @@ const UploadFolder = ({
 }: UploadFolderProps) => {
 
     const { useUploadFolder } = useFolder();
-    const { parentFolderId } = useParentFolderId()
-    const uploadFolderMutation =
-        useUploadFolder();
+    const uploadFolderMutation = useUploadFolder();
+    const { parentFolderId: rawParentFolderId } = useParams();
+    // Ensure parentFolderId is a string, not null, for FormData append
+    const parentFolderId = rawParentFolderId ?? "";
 
     const handleUploadFolderChange = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -27,6 +28,9 @@ const UploadFolder = ({
         }
 
         const formData = new FormData();
+
+        // Always append as a string; FormData does not accept null
+        formData.append("parentFolderId", parentFolderId);
 
         Array.from(e.target.files).forEach(
             (file) => {
@@ -42,11 +46,12 @@ const UploadFolder = ({
                 );
             }
         );
+
         uploadFolderMutation.mutate(
             {
                 formData,
                 parentFolderId,
-            }
+            },
         );
     };
 
@@ -69,7 +74,7 @@ const UploadFolder = ({
                 type="file"
                 hidden
                 multiple
-                // @ts-expect-error
+                // @ts-expect-error for webkitdirectory: this is a non-standard attribute necessary for folder selection
                 webkitdirectory=""
                 // @ts-expect-error
                 directory=""

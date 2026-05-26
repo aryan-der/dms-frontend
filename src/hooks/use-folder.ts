@@ -39,7 +39,6 @@ export default function useFolder() {
     useMutation({
       mutationFn: async ({
         formData,
-        parentFolderId,
       }: {
         formData: FormData
         parentFolderId: string | number | null
@@ -114,6 +113,7 @@ export default function useFolder() {
         ...body
       }: {
         folderId: string | number | null
+        parentFolderId?: string | number | null
         [key: string]: unknown
       }) =>
         funcFetch({
@@ -121,9 +121,17 @@ export default function useFolder() {
           method: "PUT",
           body,
         }),
-      onSuccess: (data) => {
+      onSuccess: (data, variable) => {
         QueryClient.invalidateQueries({
           queryKey: folderQueryKey.folders,
+        })
+        QueryClient.invalidateQueries({
+          queryKey: folderQueryKey.folderContent({
+            parentFolderId:
+              variable?.parentFolderId !== undefined
+                ? variable.parentFolderId
+                : null,
+          }),
         })
         toast.success(data?.message)
       },

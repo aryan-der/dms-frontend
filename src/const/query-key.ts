@@ -18,19 +18,4 @@ export const fileQueryKey = {
   file: ({ fileId }: { fileId: string | number }) => {
     return ["file", fileId]
   },
-  search: ({ keyword }: { keyword: string }) => {
-    return ["file", "search", keyword]
-  },
-  trashFiles: ["files", "trash"],
-  filePage: ({
-    fileId,
-    filePath,
-    pageNumber,
-  }: {
-    fileId: number
-    filePath: string
-    pageNumber: number
-  }) => {
-    return ["file", fileId, filePath, pageNumber]
-  },
 }
