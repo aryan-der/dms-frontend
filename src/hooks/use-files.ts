@@ -1,4 +1,4 @@
-import { fileEndpoint } from "@/const/endpoints"
+import { fileEndpoint, folderEndpoint } from "@/const/endpoints"
 import { fileQueryKey, folderQueryKey } from "@/const/query-key"
 import { funcFetch } from "@/func/func-fetch"
 import type { FileType } from "@/types/data/file-types"
@@ -42,8 +42,46 @@ export default function useFile() {
         }) as Promise<ResTypes<FileType>>,
     })
 
+  const useUpdateItem = () =>
+    useMutation({
+      mutationFn: ({
+        type,
+        id,
+        ...body
+      }: {
+        type: "FILE" | "FOLDER"
+        id: string | number
+        name: string
+        parentFolderId?: string
+      }) =>
+        funcFetch({
+          endPoint:
+            type === "FILE"
+              ? fileEndpoint.updateFile(id)
+              : folderEndpoint.updateFolder({ id }),
+          method: "PUT",
+          body,
+        }),
+
+      onSuccess: (data, variables) => {
+        QueryClient.invalidateQueries({
+          queryKey: fileQueryKey.files,
+        })
+        QueryClient.invalidateQueries({
+          queryKey: folderQueryKey.folderContent({
+            parentFolderId: variables.parentFolderId ?? null,
+          }),
+        })
+        toast.success(data?.message)
+      },
+      onError: (error) => {
+        toast.error(error?.message)
+      },
+    })
+
   return {
     useFileUpload,
     useFileViewer,
+    useUpdateItem,
   }
 }

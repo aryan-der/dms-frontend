@@ -9,13 +9,20 @@ import {
     FiMoreVertical,
     FiChevronRight,
 } from "react-icons/fi"
-import FolderRename from "./folder-rename"
+
+import RenameItem from "./folder-rename"
+
 import type { FolderType } from "@/types/data/folder-types"
+import type { FileType } from "@/types/data/file-types"
+import { useParams } from "react-router-dom"
+import DeleteItemsButton from "./delete-items"
+import { Move } from "lucide-react"
+import MoveItemsButton from "./move-items"
 
 type MenuItem =
     | {
         type: "item"
-        label: string
+        label: React.ReactNode
         icon: React.ReactNode
         right?: string
         hasSubmenu?: boolean
@@ -25,7 +32,7 @@ type MenuItem =
     | { type: "divider" }
 
 interface DropdownItemsProps {
-    folder: FolderType
+    folder: FolderType | FileType
     onSelectFolder?: (folderId: string) => void
 }
 
@@ -35,23 +42,40 @@ const DropdownItems = ({
 }: DropdownItemsProps) => {
     const [open, setOpen] = useState(false)
     const [showRename, setShowRename] = useState(false)
+    const [showMove, setShowMove] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
+    const { parentFolderId } = useParams()
     const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const isFile = "mimeType" in folder
     const _id = folder?._id
-    const name = folder?.name
+    console.log(_id);
+
     const menuGroups: MenuItem[][] = [
         [
-            { type: "item", label: "Download", icon: <FiDownload size={14} /> },
+            {
+                type: "item",
+                label: "Download",
+                icon: <FiDownload size={14} />,
+            },
+
             {
                 type: "item",
                 label: "Rename",
                 icon: <FiEdit2 size={14} />,
                 right: "Ctrl+Alt+E",
+
                 onClick: () => {
                     setShowRename(true)
                 },
             },
+            {
+                type: "item",
+                label: "Move",
+                icon: <Move size={14} />,
+                onClick: () => setShowMove(true),
+            }
         ],
+
         [
             {
                 type: "item",
@@ -59,12 +83,14 @@ const DropdownItems = ({
                 icon: <FiShare2 size={14} />,
                 hasSubmenu: true,
             },
+
             {
                 type: "item",
                 label: "Organize",
                 icon: <FiFolderPlus size={14} />,
                 hasSubmenu: true,
             },
+
             {
                 type: "item",
                 label: "Folder information",
@@ -72,10 +98,17 @@ const DropdownItems = ({
                 hasSubmenu: true,
             },
         ],
+
         [
             {
                 type: "item",
-                label: "Move to trash",
+                label: (
+                    <DeleteItemsButton
+                        folderIds={isFile ? [] : [folder._id]}
+                        fileIds={isFile ? [folder._id] : []}
+                        parentFolderId={parentFolderId}
+                    />
+                ),
                 icon: <FiTrash2 size={14} />,
                 right: "Delete",
                 danger: true,
@@ -110,12 +143,14 @@ const DropdownItems = ({
     }
 
     const handleMenuClick = () => {
-        // User action: select this folder
         if (typeof onSelectFolder === "function") {
             onSelectFolder(_id)
         }
+
         setOpen((prev) => !prev)
     }
+
+    const itemType = "mimeType" in folder ? "FILE" : "FOLDER"
 
     return (
         <div
@@ -127,7 +162,8 @@ const DropdownItems = ({
             {/* Trigger */}
             <button
                 onClick={handleMenuClick}
-                className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border/40 bg-background text-muted-foreground transition-all duration-100 hover:bg-muted hover:text-foreground ${open ? "bg-muted text-foreground" : ""} `}
+                className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border/40 bg-background text-muted-foreground transition-all duration-100 hover:bg-muted hover:text-foreground ${open ? "bg-muted text-foreground" : ""
+                    }`}
             >
                 <FiMoreVertical size={15} />
             </button>
@@ -153,12 +189,16 @@ const DropdownItems = ({
                                         key={ii}
                                         onClick={() => {
                                             entry.onClick?.()
+
                                             setOpen(false)
                                         }}
-                                        className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-[13px] transition-colors duration-75 ${ii > 0 ? "border-t border-border/20" : ""} ${entry.danger
-                                            ? "text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
-                                            : "text-foreground hover:bg-muted"
-                                            } `}
+                                        className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-[13px] transition-colors duration-75 ${ii > 0
+                                            ? "border-t border-border/20"
+                                            : ""
+                                            } ${entry.danger
+                                                ? "text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
+                                                : "text-foreground hover:bg-muted"
+                                            }`}
                                     >
                                         <span
                                             className={
@@ -170,14 +210,16 @@ const DropdownItems = ({
                                             {entry.icon}
                                         </span>
 
-                                        <span className="flex-1 truncate">{entry.label}</span>
+                                        <span className="flex-1 truncate">
+                                            {entry.label}
+                                        </span>
 
                                         {entry.right && (
                                             <span
                                                 className={`text-[11px] ${entry.danger
                                                     ? "text-red-400"
                                                     : "text-muted-foreground/50"
-                                                    } `}
+                                                    }`}
                                             >
                                                 {entry.right}
                                             </span>
@@ -197,28 +239,38 @@ const DropdownItems = ({
                 </div>
             )}
 
+            {/* Rename Dialog */}
             {showRename && (
-                <FolderRename
+                <RenameItem
                     open={showRename}
                     onOpenChange={setShowRename}
-                    folderId={_id}
-                    currentName={name}
+                    id={folder._id}
+                    currentName={folder.name}
+                    type={itemType}
                 />
             )}
+            <MoveItemsButton
+                open={showMove}
+                onOpenChange={setShowMove}
+                folderIds={isFile ? [] : [folder._id]}
+                fileIds={isFile ? [folder._id] : []}
+                parentFolderId={parentFolderId}
+                excludeId={folder._id}
+            />
 
             <style>{`
-        @keyframes pieceIn {
-          from {
-            opacity: 0;
-            transform: translateY(-7px) scaleY(0.93);
-          }
+                @keyframes pieceIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-7px) scaleY(0.93);
+                    }
 
-          to {
-            opacity: 1;
-            transform: translateY(0) scaleY(1);
-          }
-        }
-      `}</style>
+                    to {
+                        opacity: 1;
+                        transform: translateY(0) scaleY(1);
+                    }
+                }
+            `}</style>
         </div>
     )
 }

@@ -1,10 +1,12 @@
 import { folderEndpoint } from "@/const/endpoints"
-import { folderQueryKey } from "@/const/query-key"
+import { fileQueryKey, folderQueryKey } from "@/const/query-key"
 import { funcFetch } from "@/func/func-fetch"
 import type { BreadcrumbType } from "@/types/data/bredcrumb-types"
 import type { FileType } from "@/types/data/file-types"
 import type { FolderType } from "@/types/data/folder-types"
 import type { createFolderPayloadType } from "@/types/payload/cretae-folder-types"
+import type { DeleteItemsPayload } from "@/types/payload/delete-items-types"
+import type { MoveItemsPayload } from "@/types/payload/move-items-types"
 import type { ResTypes } from "@/types/res/res-types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -87,50 +89,60 @@ export default function useFolder() {
         >,
     })
 
-  const useDeleteFolder = () =>
+  const useDeleteItems = () =>
     useMutation({
-      mutationFn: (body) =>
+      mutationFn: (body: DeleteItemsPayload) =>
         funcFetch({
-          endPoint: folderEndpoint.deleteFolder,
+          endPoint: folderEndpoint.deleteItems,
           method: "DELETE",
           body,
         }),
-      onSuccess: (data) => {
+
+      onSuccess: (data, variables) => {
         QueryClient.invalidateQueries({
           queryKey: folderQueryKey.folders,
         })
+        QueryClient.invalidateQueries({
+          queryKey: fileQueryKey.files,
+        })
+        QueryClient.invalidateQueries({
+          queryKey: folderQueryKey.folderContent({
+            parentFolderId: variables?.parentFolderId ?? "",
+          }),
+        })
+
         toast.success(data?.message)
       },
+
       onError: (error) => {
         toast.error(error?.message)
       },
     })
 
-  const useUpdateFolder = () =>
+  const useMoveItems = () =>
     useMutation({
-      mutationFn: ({
-        folderId,
-        ...body
-      }: {
-        folderId: string | number | null
-        parentFolderId?: string | number | null
-        [key: string]: unknown
-      }) =>
+      mutationFn: (body: MoveItemsPayload) =>
         funcFetch({
-          endPoint: folderEndpoint.updateFolder({ folderId }),
+          endPoint: folderEndpoint.moveItems,
           method: "PUT",
           body,
         }),
-      onSuccess: (data, variable) => {
+
+      onSuccess: (data, variables) => {
         QueryClient.invalidateQueries({
           queryKey: folderQueryKey.folders,
         })
         QueryClient.invalidateQueries({
+          queryKey: fileQueryKey.files,
+        })
+        QueryClient.invalidateQueries({
           queryKey: folderQueryKey.folderContent({
-            parentFolderId:
-              variable?.parentFolderId !== undefined
-                ? variable.parentFolderId
-                : null,
+            parentFolderId: variables?.parentFolderId ?? "",
+          }),
+        })
+        QueryClient.invalidateQueries({
+          queryKey: folderQueryKey.folderContent({
+            parentFolderId: variables?.targetFolderId ?? "",
           }),
         })
         toast.success(data?.message)
@@ -144,7 +156,7 @@ export default function useFolder() {
     useCreateFolder,
     useGetContent,
     useUploadFolder,
-    useDeleteFolder,
-    useUpdateFolder,
+    useDeleteItems,
+    useMoveItems,
   }
 }

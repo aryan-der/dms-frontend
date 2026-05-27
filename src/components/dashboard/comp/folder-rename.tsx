@@ -9,28 +9,38 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import useFolder from "@/hooks/use-folder";
 import { useParams } from "react-router-dom";
+import useFile from "@/hooks/use-files";
 
-interface FolderRenameProps {
+interface RenameItemProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    folderId: string | number | null;
+
+    id: string | number;
+
     currentName: string;
+
+    type: "FILE" | "FOLDER";
 }
 
-const FolderRename: React.FC<FolderRenameProps> = ({
+const RenameItem: React.FC<RenameItemProps> = ({
     open,
     onOpenChange,
-    folderId,
+    id,
     currentName,
+    type,
 }) => {
-    const { useUpdateFolder } = useFolder();
+    const { useUpdateItem } = useFile();
+
     const [name, setName] = useState(currentName);
+
     const [error, setError] = useState<string | null>(null);
-    const { mutate: updateFolder, status } = useUpdateFolder();
-    const isLoading = status === "pending";
+
     const { parentFolderId } = useParams();
+
+    const { mutate, status } = useUpdateItem();
+
+    const isLoading = status === "pending";
 
     const prevOpenRef = React.useRef(open);
 
@@ -39,6 +49,7 @@ const FolderRename: React.FC<FolderRenameProps> = ({
             setName(currentName ?? "");
             setError(null);
         }
+
         prevOpenRef.current = open;
     }, [open, currentName]);
 
@@ -46,24 +57,40 @@ const FolderRename: React.FC<FolderRenameProps> = ({
         setError(null);
 
         if (!name.trim()) {
-            setError("Folder name cannot be empty.");
+            setError(
+                `${type === "FILE" ? "File" : "Folder"} name cannot be empty.`,
+            );
+
             return;
         }
 
-        updateFolder(
-            { folderId, name, parentFolderId },
+        mutate(
+            {
+                type,
+                id,
+                name,
+                parentFolderId,
+            },
+            {
+                onSuccess: () => {
+                    onOpenChange(false);
+                },
+            },
         );
     };
 
     const handleDialogClose = (openState: boolean) => {
         onOpenChange(openState);
+
         if (!openState) {
             setError(null);
             setName(currentName ?? "");
         }
     };
 
-    const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleInputKeyDown = (
+        e: React.KeyboardEvent<HTMLInputElement>,
+    ) => {
         if (e.key === "Enter" && !isLoading && name.trim()) {
             handleRename();
         }
@@ -73,22 +100,35 @@ const FolderRename: React.FC<FolderRenameProps> = ({
         <Dialog open={open} onOpenChange={handleDialogClose}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Rename Folder</DialogTitle>
+                    <DialogTitle>
+                        Rename {type === "FILE" ? "File" : "Folder"}
+                    </DialogTitle>
+
                     <DialogDescription>
-                        Give your folder a new, meaningful name.
+                        Give your{" "}
+                        {type === "FILE" ? "file" : "folder"} a new,
+                        meaningful name.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="py-4 flex flex-col gap-0">
+
+                <div className="flex flex-col gap-1 py-4">
                     <Input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter new folder name"
+                        placeholder={`Enter new ${type === "FILE" ? "file" : "folder"
+                            } name`}
                         autoFocus
                         disabled={isLoading}
                         onKeyDown={handleInputKeyDown}
                     />
-                    {error && <p className="text-sm text-red-500">{error}</p>}
+
+                    {error && (
+                        <p className="text-sm text-red-500">
+                            {error}
+                        </p>
+                    )}
                 </div>
+
                 <DialogFooter>
                     <Button
                         type="button"
@@ -98,12 +138,16 @@ const FolderRename: React.FC<FolderRenameProps> = ({
                     >
                         Cancel
                     </Button>
+
                     <Button
                         type="button"
                         onClick={handleRename}
                         disabled={isLoading || !name.trim()}
                     >
-                        {isLoading ? "Renaming..." : "Rename"}
+                        {isLoading
+                            ? "Renaming..."
+                            : `Rename ${type === "FILE" ? "File" : "Folder"
+                            }`}
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -111,4 +155,4 @@ const FolderRename: React.FC<FolderRenameProps> = ({
     );
 };
 
-export default FolderRename;
+export default RenameItem;

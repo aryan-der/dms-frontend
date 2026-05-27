@@ -23,13 +23,16 @@ export const folderEndpoint = {
   // Upload folder
   uploadFolder: "/folders/upload",
 
-  deleteFolder: "/folders/delete-folders",
+  deleteItems: "/folders/delete-items",
 
-  updateFolder: ({ folderId }: { folderId: string | number | null }) =>
-    `/folders/update-folder/${folderId}`,
+  updateFolder: ({ id }: { id: string | number | null }) =>
+    `/folders/update-folder/${id}`,
+
+  moveItems: "/folders/move-items",
 }
 
 export const fileEndpoint = {
   addFile: "/files/upload",
   viewFile: (id: string) => `/files/view/${id}`,
+  updateFile: (fileId: string | number) => `/files/update-file/${fileId}`,
 }

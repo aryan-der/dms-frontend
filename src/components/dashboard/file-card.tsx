@@ -68,7 +68,10 @@ const FileCard: React.FC<FileCardProps> = ({
                             className="flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <DropdownItems />
+                            <DropdownItems
+                                folder={file}
+                                onSelectFolder={handleSelectFile}
+                            />
                         </div>
                     </div>
                 )
