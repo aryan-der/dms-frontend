@@ -11,6 +11,7 @@ export const folderQueryKey = {
     return ["folder", "content", `${parentFolderId ? parentFolderId : ""}`]
   },
   trashFolders: ["folders", "trash"],
+  downloadItems: ["downloadItem"],
 }
 
 export const fileQueryKey = {

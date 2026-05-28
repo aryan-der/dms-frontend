@@ -152,11 +152,49 @@ export default function useFolder() {
       },
     })
 
+  const useDownloadItems = useMutation({
+    mutationFn: async ({
+      folderIds = [],
+      fileIds = [],
+    }: {
+      folderIds?: string[]
+      fileIds?: string[]
+    }) => {
+      const blob = await funcFetch<Blob>({
+        endPoint: folderEndpoint.downloadItem,
+        method: "POST",
+        body: {
+          folderIds,
+          fileIds,
+        },
+      })
+
+      return blob
+    },
+
+    onSuccess: (blob) => {
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = "download.zip"
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      toast.success("Download successfully")
+    },
+
+    onError: (error) => {
+      toast.error(error?.message)
+    },
+  })
+
   return {
     useCreateFolder,
     useGetContent,
     useUploadFolder,
     useDeleteItems,
     useMoveItems,
+    useDownloadItems,
   }
 }

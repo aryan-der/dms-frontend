@@ -142,7 +142,6 @@ const MoveItemsButton = ({
                     ))}
                 </div>
 
-                {/* Custom scrollbar styling for folder list */}
                 <div
                     ref={folderListRef}
                     className="border border-border/30 rounded-lg overflow-hidden min-h-[230px] max-h-[340px] overflow-y-auto custom-scrollbar"

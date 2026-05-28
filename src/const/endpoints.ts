@@ -29,6 +29,7 @@ export const folderEndpoint = {
     `/folders/update-folder/${id}`,
 
   moveItems: "/folders/move-items",
+  downloadItem: "/folders/download-items",
 }
 
 export const fileEndpoint = {
