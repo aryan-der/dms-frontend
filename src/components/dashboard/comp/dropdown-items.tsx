@@ -8,6 +8,12 @@ import {
     FiTrash2,
     FiMoreVertical,
     FiChevronRight,
+    FiStar,
+    FiLink2,
+    FiFolder,
+    FiUsers,
+    FiFileText,
+    FiActivity,
 } from "react-icons/fi"
 
 import RenameItem from "./folder-rename"
@@ -99,8 +105,8 @@ const DropdownItems = ({
                 icon: <FiShare2 size={14} />,
                 hasSubmenu: true,
                 submenuItems: [
-                    { label: "Share", onClick: () => { } },
-                    { label: "Copy Link", onClick: () => { } },
+                    { label: "Share", icon: <FiUsers size={14} />, onClick: () => { } },
+                    { label: "Copy Link", icon: <FiLink2 size={14} />, onClick: () => { } },
                 ],
             },
             {
@@ -110,8 +116,8 @@ const DropdownItems = ({
                 icon: <FiFolderPlus size={14} />,
                 hasSubmenu: true,
                 submenuItems: [
-                    { label: "Add to Starred", onClick: () => { } },
-                    { label: "Add to Collection", onClick: () => { } },
+                    { label: "Add to Starred", icon: <FiStar size={14} />, onClick: () => { } },
+                    { label: "Add to Collection", icon: <FiFolder size={14} />, onClick: () => { } },
                 ],
             },
             {
@@ -121,8 +127,8 @@ const DropdownItems = ({
                 icon: <FiInfo size={14} />,
                 hasSubmenu: true,
                 submenuItems: [
-                    { label: "Details", onClick: () => { } },
-                    { label: "Activity", onClick: () => { } },
+                    { label: "Details", icon: <FiFileText size={14} />, onClick: () => { } },
+                    { label: "Activity", icon: <FiActivity size={14} />, onClick: () => { } },
                 ],
             },
         ],
@@ -183,12 +189,18 @@ const DropdownItems = ({
         <div
             ref={ref}
             className="relative inline-block"
+            onClick={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
             {/* Trigger */}
             <button
-                onClick={handleMenuClick}
+                onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleMenuClick()
+                }}
                 className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border/40 bg-background text-muted-foreground transition-all duration-100 hover:bg-muted hover:text-foreground ${open ? "bg-muted text-foreground" : ""
                     }`}
             >
@@ -201,7 +213,6 @@ const DropdownItems = ({
                     {menuGroups.map((group, gi) => (
                         <div
                             key={gi}
-                            // ✅ removed overflow-hidden so submenu is not clipped
                             className="flex flex-col rounded-[10px] border border-border/30 bg-background opacity-0 shadow-lg"
                             style={{
                                 animation: `pieceIn 200ms cubic-bezier(0.22,1,0.36,1) ${gi * 75}ms forwards`,
@@ -273,7 +284,13 @@ const DropdownItems = ({
                                         {/* Submenu Panel */}
                                         {hasSubmenu &&
                                             activeSubmenu === submenuKey && (
-                                                <div className="absolute left-full top-0 z-50 ml-1 w-[180px] rounded-[10px] border border-border/30 bg-background shadow-lg">
+                                                <div
+                                                    className="absolute left-full top-0 z-50 ml-1 w-[180px] rounded-[10px] border border-border/30 bg-background shadow-lg submenu-animate"
+                                                    style={{
+                                                        opacity: 1,
+                                                        animation: "submenuIn 180ms cubic-bezier(0.22,1,0.36,1) 0ms both"
+                                                    }}
+                                                >
                                                     {entry.submenuItems!.map(
                                                         (sub, si) => (
                                                             <button
@@ -286,11 +303,9 @@ const DropdownItems = ({
                                                                 className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-[13px] transition-colors hover:bg-muted
                                                                     ${si > 0 ? "border-t border-border/20" : ""}`}
                                                             >
-                                                                {sub.icon && (
-                                                                    <span className="shrink-0 text-muted-foreground">
-                                                                        {sub.icon}
-                                                                    </span>
-                                                                )}
+                                                                <span className="shrink-0 text-muted-foreground">
+                                                                    {sub.icon ? sub.icon : <span style={{ width: 14, display: "inline-block" }} />}
+                                                                </span>
                                                                 <span className="flex-1 truncate text-foreground">
                                                                     {sub.label}
                                                                 </span>
@@ -338,8 +353,19 @@ const DropdownItems = ({
                         transform: translateY(0) scaleY(1);
                     }
                 }
+                @keyframes submenuIn {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-10px) scaleY(0.94);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0) scaleY(1);
+                    }
+                }
             `}</style>
         </div>
+
     )
 }
 
