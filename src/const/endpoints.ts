@@ -30,6 +30,9 @@ export const folderEndpoint = {
 
   moveItems: "/folders/move-items",
   downloadItem: "/folders/download-items",
+  shareEveryone: "/folders/share",
+  getShare: (token: string) => `/get/share/${token}`,
+  shareAccess: (token: string) => `/folders/share/${token}`,
 }
 
 export const fileEndpoint = {

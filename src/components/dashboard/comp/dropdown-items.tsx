@@ -24,6 +24,7 @@ import DeleteItemsButton from "./delete-items"
 import { Move } from "lucide-react"
 import MoveItemsButton from "./move-items"
 import useFolder from "@/hooks/use-folder"
+import ShareEveryoneDialog from "./share-everyone"
 
 type SubMenuItem = {
     label: string
@@ -57,6 +58,7 @@ const DropdownItems = ({
     const [open, setOpen] = useState(false)
     const [showRename, setShowRename] = useState(false)
     const [showMove, setShowMove] = useState(false)
+    const [showShareEveryone, setShowShareEveryone] = useState(false)
     const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null)
     const ref = useRef<HTMLDivElement>(null)
     const { parentFolderId } = useParams()
@@ -106,7 +108,11 @@ const DropdownItems = ({
                 hasSubmenu: true,
                 submenuItems: [
                     { label: "Share", icon: <FiUsers size={14} />, onClick: () => { } },
-                    { label: "Copy Link", icon: <FiLink2 size={14} />, onClick: () => { } },
+                    {
+                        label: "Share Everyone", icon: <FiLink2 size={14} />, onClick: () => {
+                            setShowShareEveryone(true)
+                        }
+                    },
                 ],
             },
             {
@@ -340,6 +346,12 @@ const DropdownItems = ({
                 fileIds={isFile ? [folder._id] : []}
                 parentFolderId={parentFolderId}
                 excludeId={folder._id}
+            />
+
+            <ShareEveryoneDialog
+                open={showShareEveryone}
+                onOpenChange={setShowShareEveryone}
+                folder={folder}
             />
 
             <style>{`

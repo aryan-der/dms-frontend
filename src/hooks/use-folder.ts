@@ -1,5 +1,5 @@
 import { folderEndpoint } from "@/const/endpoints"
-import { fileQueryKey, folderQueryKey } from "@/const/query-key"
+import { fileQueryKey, folderQueryKey, shareQueryKey } from "@/const/query-key"
 import { funcFetch } from "@/func/func-fetch"
 import type { BreadcrumbType } from "@/types/data/bredcrumb-types"
 import type { FileType } from "@/types/data/file-types"
@@ -7,6 +7,7 @@ import type { FolderType } from "@/types/data/folder-types"
 import type { createFolderPayloadType } from "@/types/payload/cretae-folder-types"
 import type { DeleteItemsPayload } from "@/types/payload/delete-items-types"
 import type { MoveItemsPayload } from "@/types/payload/move-items-types"
+import type { shareEveryonePayload } from "@/types/payload/share-items-types"
 import type { ResTypes } from "@/types/res/res-types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -189,6 +190,53 @@ export default function useFolder() {
     },
   })
 
+  const useShareEveryone = () =>
+    useMutation({
+      mutationFn: (body: shareEveryonePayload) =>
+        funcFetch({
+          endPoint: folderEndpoint.shareEveryone,
+          method: "POST",
+          body,
+        }),
+      onSuccess: (data) => {
+        QueryClient.invalidateQueries({
+          queryKey: shareQueryKey.shareEveryOne,
+        })
+        toast.success(data?.message)
+      },
+      onError: (error) => {
+        toast.error(error?.message)
+      },
+    })
+
+  const useGetShare = ({ token }: { token: string }) =>
+    useQuery({
+      queryKey: [shareQueryKey.shareEveryOne, token],
+      queryFn: () =>
+        funcFetch({
+          endPoint: folderEndpoint.getShare(token),
+        }),
+    })
+
+  const useShareAccess = ({ token }: { token: string }) =>
+    useMutation({
+      mutationFn: (body) =>
+        funcFetch({
+          endPoint: folderEndpoint.shareAccess(token),
+          method: "POST",
+          body,
+        }),
+      onSuccess: (data) => {
+        QueryClient.invalidateQueries({
+          queryKey: shareQueryKey.shareEveryOne,
+        })
+        toast.success(data?.message)
+      },
+      onError: (error) => {
+        toast.error(error?.message)
+      },
+    })
+
   return {
     useCreateFolder,
     useGetContent,
@@ -196,5 +244,8 @@ export default function useFolder() {
     useDeleteItems,
     useMoveItems,
     useDownloadItems,
+    useShareEveryone,
+    useShareAccess,
+    useGetShare,
   }
 }

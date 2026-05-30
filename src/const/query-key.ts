@@ -20,3 +20,7 @@ export const fileQueryKey = {
     return ["file", fileId]
   },
 }
+
+export const shareQueryKey = {
+  shareEveryOne: ["share"],
+}

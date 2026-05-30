@@ -8,6 +8,7 @@ import UserDashboard from "@/app/user/dashboard/Dashboard"
 import UserFavourite from "@/app/user/favourite/Favourite"
 import UserSearch from "@/app/user/search/Search"
 import UserTrash from "@/app/user/trash/Trash"
+import SharePage from "@/components/dashboard/SharePage"
 import { adminChildRoute, adminRoute, authRoute, userRoute } from "@/const/route"
 import AdminGuard from "@/guard/admin/admin-guard"
 import AuthGuard from "@/guard/auth/auth-guard"
@@ -20,6 +21,7 @@ import { Routes, Route, Navigate } from "react-router-dom"
 const Layout = () => {
     return (
         <Routes>
+            <Route path="/share/:token" element={<SharePage />} />
             <Route path="/" element={<Navigate to={authRoute.login} />} />
             {/* Auth */}
             <Route path={authRoute.base} element={
