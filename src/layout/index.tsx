@@ -9,20 +9,25 @@ import UserFavourite from "@/app/user/favourite/Favourite"
 import UserSearch from "@/app/user/search/Search"
 import UserTrash from "@/app/user/trash/Trash"
 import SharePage from "@/components/dashboard/SharePage"
-import { adminChildRoute, adminRoute, authRoute, userRoute } from "@/const/route"
+import { adminChildRoute, adminRoute, authRoute, shareChildRoute, shareRoute, userRoute } from "@/const/route"
 import AdminGuard from "@/guard/admin/admin-guard"
 import AuthGuard from "@/guard/auth/auth-guard"
 import UserGuard from "@/guard/user/user-guard"
 import AdminRoute from "@/routes/admin/route"
 import AuthRoute from "@/routes/auth/route"
+import ShareRoute from "@/routes/share/route"
 import UserRoute from "@/routes/user/route"
 import { Routes, Route, Navigate } from "react-router-dom"
 
 const Layout = () => {
     return (
         <Routes>
-            <Route path="/share/:token" element={<SharePage />} />
             <Route path="/" element={<Navigate to={authRoute.login} />} />
+            <Route path={shareRoute.base} element={
+                <ShareRoute />
+            }>
+                <Route path={shareChildRoute.share} element={<SharePage />} />
+            </Route>
             {/* Auth */}
             <Route path={authRoute.base} element={
                 <AuthGuard>

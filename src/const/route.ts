@@ -13,6 +13,17 @@ export const authChildRoute = {
   login: funcGetChildPath(authRoute.login, authRoute.base),
 }
 
+const shareBaseRoute = "/share"
+
+export const shareRoute = {
+  base: shareBaseRoute,
+  share: `${shareBaseRoute}/:token`,
+}
+
+export const shareChildRoute = {
+  share: funcGetChildPath(shareRoute.share, shareRoute.base),
+}
+
 // Admin
 
 const adminBase = "/admin"

@@ -7,7 +7,11 @@ import type { FolderType } from "@/types/data/folder-types"
 import type { createFolderPayloadType } from "@/types/payload/cretae-folder-types"
 import type { DeleteItemsPayload } from "@/types/payload/delete-items-types"
 import type { MoveItemsPayload } from "@/types/payload/move-items-types"
-import type { shareEveryonePayload } from "@/types/payload/share-items-types"
+import type {
+  ShareAccessResponse,
+  shareEveryonePayload,
+  ShareAccessRequest,
+} from "@/types/payload/share-items-types"
 import type { ResTypes } from "@/types/res/res-types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -219,7 +223,7 @@ export default function useFolder() {
     })
 
   const useShareAccess = ({ token }: { token: string }) =>
-    useMutation({
+    useMutation<ShareAccessResponse, Error, ShareAccessRequest>({
       mutationFn: (body) =>
         funcFetch({
           endPoint: folderEndpoint.shareAccess(token),

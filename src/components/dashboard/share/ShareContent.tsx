@@ -1,9 +1,13 @@
-// components/share/ShareContent.tsx
-
 import { useEffect, useState } from "react"
-import { Download, File, Folder, Loader2 } from "lucide-react"
+import { Download, Loader2 } from "lucide-react"
+import { ChevronDown, ChevronRight, Folder, FileText } from "lucide-react"
+import { FiFolder, FiFile } from "react-icons/fi"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import useFolder from "@/hooks/use-folder"
 import type { ShareAccessResponse, ShareFile, ShareFolder } from "@/types/payload/share-items-types"
 
@@ -20,23 +24,20 @@ const formatSize = (bytes: number) => {
 }
 
 const ShareContent = ({ token, allowDownload, prefetchedData }: Props) => {
-    const [data, setData] = useState<ShareAccessResponse | null>(
-        prefetchedData ?? null
-    )
+    const [data, setData] = useState<ShareAccessResponse | null>(prefetchedData ?? null)
+    const [folderOpen, setFolderOpen] = useState(true)
+    const [fileOpen, setFileOpen] = useState(true)
+
     const { useShareAccess } = useFolder()
     const { mutate, isPending } = useShareAccess({ token })
 
-    // Public share — auto fetch
     useEffect(() => {
         if (!prefetchedData) {
-            mutate(
-                {},
-                {
-                    onSuccess: (res) => {
-                        if (res?.success) setData(res)
-                    },
-                }
-            )
+            mutate({ password: "" }, {
+                onSuccess: (res) => {
+                    if (res?.success) setData(res)
+                },
+            })
         }
     }, [])
 
@@ -50,83 +51,101 @@ const ShareContent = ({ token, allowDownload, prefetchedData }: Props) => {
 
     const files: ShareFile[] = data.files ?? []
     const folders: ShareFolder[] = data.folders ?? []
+    const canDownload = allowDownload ?? data.allowDownload
 
     return (
-        <div className="min-h-screen bg-muted/40 px-4 py-10">
-            <div className="mx-auto max-w-2xl space-y-6">
-
-                {/* Header */}
-                <div>
-                    <h1 className="text-2xl font-bold">Shared With You</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        {files.length} file{files.length !== 1 ? "s" : ""}
-                        {folders.length > 0 &&
-                            `, ${folders.length} folder${folders.length !== 1 ? "s" : ""}`}
-                    </p>
-                </div>
-
-                {/* Folders */}
-                {folders.length > 0 && (
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-base">Folders</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
+        <div className="space-y-6">
+            {/* FOLDERS */}
+            {folders.length > 0 && (
+                <Collapsible open={folderOpen} onOpenChange={setFolderOpen}>
+                    <CollapsibleTrigger className="w-full flex items-center justify-between rounded-lg border bg-card px-4 py-3 hover:bg-muted/60 transition-all cursor-pointer">
+                        <div className="flex items-center gap-2">
+                            <Folder className="w-5 h-5 text-yellow-500" />
+                            <h2 className="font-semibold text-lg">Folders</h2>
+                            <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
+                                {folders.length}
+                            </span>
+                        </div>
+                        {folderOpen
+                            ? <ChevronDown className="w-5 h-5" />
+                            : <ChevronRight className="w-5 h-5" />
+                        }
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pt-4">
+                        <div className="flex flex-wrap gap-4">
                             {folders.map((folder) => (
                                 <div
                                     key={folder._id}
-                                    className="flex items-center gap-3 rounded-lg border bg-background px-4 py-3 hover:bg-muted/50 transition-colors"
+                                    className="flex max-w-[260px] min-w-[220px] cursor-default items-center gap-3 rounded-2xl border bg-background px-4 py-3 shadow-sm transition-all duration-200 select-none hover:bg-muted/40 hover:shadow-md border-border"
                                 >
-                                    <Folder className="h-5 w-5 shrink-0 text-yellow-500" />
-                                    <span className="flex-1 text-sm font-medium truncate">
-                                        {folder.name}
-                                    </span>
+                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-yellow-100">
+                                        <FiFolder size={24} className="text-yellow-600" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-medium">{folder.name}</p>
+                                    </div>
                                 </div>
                             ))}
-                        </CardContent>
-                    </Card>
-                )}
+                        </div>
+                    </CollapsibleContent>
+                </Collapsible>
+            )}
 
-                {/* Files */}
-                {files.length > 0 && (
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-base">Files</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
+            {/* FILES */}
+            {files.length > 0 && (
+                <Collapsible open={fileOpen} onOpenChange={setFileOpen}>
+                    <CollapsibleTrigger className="w-full flex items-center justify-between rounded-lg border bg-card px-4 py-3 hover:bg-muted/60 transition-all cursor-pointer">
+                        <div className="flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-blue-500" />
+                            <h2 className="font-semibold text-lg">Files</h2>
+                            <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
+                                {files.length}
+                            </span>
+                        </div>
+                        {fileOpen
+                            ? <ChevronDown className="w-5 h-5" />
+                            : <ChevronRight className="w-5 h-5" />
+                        }
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pt-4">
+                        <div className="flex flex-wrap gap-4">
                             {files.map((file) => (
                                 <div
                                     key={file._id}
-                                    className="flex items-center gap-3 rounded-lg border bg-background px-4 py-3 hover:bg-muted/50 transition-colors"
+                                    className="group relative flex max-w-[260px] min-w-[220px] cursor-default items-center gap-3 rounded-2xl border bg-background px-4 py-3 shadow-sm transition-all duration-200 select-none hover:bg-muted/40 hover:shadow-md border-border"
                                 >
-                                    <File className="h-5 w-5 shrink-0 text-blue-500" />
-                                    <span className="flex-1 text-sm font-medium truncate">
-                                        {file.name}
-                                    </span>
-                                    <span className="text-xs text-muted-foreground shrink-0">
-                                        {formatSize(file.size)}
-                                    </span>
-                                    {(allowDownload ?? data.allowDownload) && (
-                                        <Button size="sm" variant="ghost" asChild>
-                                            <a href={file.url} download={file.name}>
+                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100">
+                                        <FiFile size={22} className="text-blue-600" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-medium">{file.name}</p>
+                                        <p className="text-xs text-muted-foreground">{formatSize(file.size)}</p>
+                                    </div>
+                                    {canDownload && (
+                                        <a
+                                            href={file.url}
+                                            download={file.name}
+                                            onClick={e => e.stopPropagation()}
+                                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <Button size="icon" variant="ghost" className="h-8 w-8">
                                                 <Download className="h-4 w-4" />
-                                            </a>
-                                        </Button>
+                                            </Button>
+                                        </a>
                                     )}
                                 </div>
                             ))}
-                        </CardContent>
-                    </Card>
-                )}
+                        </div>
+                    </CollapsibleContent>
+                </Collapsible>
+            )}
 
-                {/* Empty State */}
-                {files.length === 0 && folders.length === 0 && (
-                    <div className="text-center py-16 text-muted-foreground">
-                        <p>No files or folders found.</p>
-                    </div>
-                )}
-
-            </div>
+            {/* Empty State */}
+            {files.length === 0 && folders.length === 0 && (
+                <div className="text-center py-16 text-muted-foreground">
+                    <p>No files or folders found.</p>
+                </div>
+            )}
         </div>
     )
 }

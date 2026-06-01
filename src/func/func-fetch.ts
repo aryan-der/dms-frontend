@@ -21,6 +21,7 @@ export async function funcFetch<T = any>({
 
   const fetchOptions: RequestInit = {
     method,
+    credentials: "include",
     headers: {
       ...(body && !(body instanceof FormData)
         ? { "Content-Type": "application/json" }

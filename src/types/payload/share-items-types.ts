@@ -35,3 +35,7 @@ export interface ShareAccessResponse {
   folders: ShareFolder[]
   message?: string
 }
+
+export interface ShareAccessRequest {
+  password: string
+}

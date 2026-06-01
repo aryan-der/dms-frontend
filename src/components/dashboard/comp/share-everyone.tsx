@@ -9,6 +9,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Copy, Loader2, X } from "lucide-react"
 import useFolder from "@/hooks/use-folder"
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSeparator,
+    InputOTPSlot,
+} from "@/components/ui/input-otp"
 
 interface Folder {
     _id: string
@@ -179,7 +185,7 @@ const ShareEveryoneDialog = ({
     const [expiryDays, setExpiryDays] = useState(7)
 
     const [emails, setEmails] = useState<string[]>([])
-    const [phones, setPhones] = useState<string[]>([])
+    // const [phones, setPhones] = useState<string[]>([])
 
     const [shareUrl, setShareUrl] = useState("")
 
@@ -195,8 +201,8 @@ const ShareEveryoneDialog = ({
                 shareType,
                 password,
                 emails: emails.filter(Boolean),
-                phones: phones.filter(Boolean),
                 expiryDays,
+                phones: [], // phones.filter(Boolean)
             },
             {
                 onSuccess: (data?: ShareData) => {
@@ -252,21 +258,31 @@ const ShareEveryoneDialog = ({
                     {/* Private Fields */}
                     {shareType === "private" && (
                         <>
-                            <div>
-                                <label className="mb-2 block text-sm">
+                            <div className="flex justify-center flex-col">
+                                <label className="mb-2 block text-sm font-medium">
                                     Password
                                 </label>
-
-                                <Input
-                                    type="password"
-                                    placeholder="Enter password"
+                                <InputOTP
+                                    maxLength={6}
                                     value={password}
-                                    onChange={(e) =>
-                                        setPassword(
-                                            e.target.value,
-                                        )
+                                    onChange={(value) =>
+                                        setPassword(value)
                                     }
-                                />
+                                >
+                                    <InputOTPGroup>
+                                        <InputOTPSlot index={0} />
+                                        <InputOTPSlot index={1} />
+                                        <InputOTPSlot index={2} />
+                                    </InputOTPGroup>
+
+                                    <InputOTPSeparator />
+
+                                    <InputOTPGroup>
+                                        <InputOTPSlot index={3} />
+                                        <InputOTPSlot index={4} />
+                                        <InputOTPSlot index={5} />
+                                    </InputOTPGroup>
+                                </InputOTP>
                             </div>
 
                             {/* Emails */}
@@ -281,14 +297,10 @@ const ShareEveryoneDialog = ({
                                     onChange={setEmails}
                                     placeholder="Enter email and press Enter"
                                 />
-
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                    Press Enter to add email
-                                </p>
                             </div>
 
                             {/* Phones */}
-                            <div>
+                            {/* <div>
                                 <label className="mb-2 block text-sm font-medium">
                                     Mobile Numbers
                                 </label>
@@ -303,7 +315,7 @@ const ShareEveryoneDialog = ({
                                 <p className="mt-1 text-xs text-muted-foreground">
                                     Only 10 digit numbers allowed
                                 </p>
-                            </div>
+                            </div> */}
                         </>
                     )}
 

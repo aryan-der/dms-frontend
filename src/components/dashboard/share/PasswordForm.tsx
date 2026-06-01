@@ -1,34 +1,75 @@
-// components/share/PasswordForm.tsx
-
 import { useState } from "react"
-import { Lock, Loader2, Eye, EyeOff } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import useFolder from "@/hooks/use-folder"
+import ShareContent from "./ShareContent"
 import {
     Card,
     CardContent,
+    CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
-    CardDescription,
 } from "@/components/ui/card"
-import useFolder from "@/hooks/use-folder"
-import ShareContent from "./ShareContent"
+import { Field } from "@/components/ui/field"
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSeparator,
+    InputOTPSlot,
+} from "@/components/ui/input-otp"
+import type { ShareAccessResponse } from "@/types/payload/share-items-types"
 
 interface Props {
     token: string
 }
 
 const PasswordForm = ({ token }: Props) => {
+    const STORAGE_KEY = `share_access_${token}`
+
     const [password, setPassword] = useState("")
-    const [showPassword, setShowPassword] = useState(false)
-    const [accessData, setAccessData] = useState(null)
-    const [error, setError] = useState<string | null>(null)
+
+    const [accessData, setAccessData] =
+        useState<ShareAccessResponse | null>(() => {
+            try {
+                const stored =
+                    sessionStorage.getItem(STORAGE_KEY)
+
+                if (!stored) return null
+
+                const parsed = JSON.parse(stored)
+
+                // Expiry check
+                if (
+                    parsed.__expires_at &&
+                    Date.now() > parsed.__expires_at
+                ) {
+                    sessionStorage.removeItem(
+                        STORAGE_KEY
+                    )
+                    return null
+                }
+
+                return parsed
+            } catch {
+                sessionStorage.removeItem(
+                    STORAGE_KEY
+                )
+                return null
+            }
+        })
+
+    const [error, setError] =
+        useState<string | null>(null)
 
     const { useShareAccess } = useFolder()
-    const { mutate, isPending } = useShareAccess({ token })
+
+    const { mutate, isPending } =
+        useShareAccess({ token })
 
     const handleSubmit = () => {
         if (!password) return
+
         setError(null)
 
         mutate(
@@ -36,81 +77,111 @@ const PasswordForm = ({ token }: Props) => {
             {
                 onSuccess: (data) => {
                     if (!data?.success) {
-                        setError(data?.message ?? "Incorrect password")
+                        setError(
+                            data?.message ??
+                            "Incorrect password"
+                        )
                         return
                     }
+
+                    const sessionData = {
+                        ...data,
+                        __expires_at:
+                            Date.now() +
+                            8 * 60 * 60 * 1000, // 8 Hours
+                    }
+
+                    sessionStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify(sessionData)
+                    )
+
                     setAccessData(data)
                 },
+
                 onError: () => {
-                    setError("Something went wrong")
+                    setError(
+                        "Something went wrong"
+                    )
                 },
             }
         )
     }
 
-    // Access મળ્યા પછી content show કરો
     if (accessData) {
         return (
             <ShareContent
                 token={token}
-                allowDownload={accessData.allowDownload}
+                allowDownload={
+                    accessData.allowDownload
+                }
                 prefetchedData={accessData}
             />
         )
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
-            <Card className="w-full max-w-md shadow-lg">
-                <CardHeader className="text-center pb-4">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-                        <Lock className="h-7 w-7 text-muted-foreground" />
-                    </div>
-                    <CardTitle className="text-xl">Password Protected</CardTitle>
+        <div className="flex min-h-full items-center justify-center bg-muted/40 px-2 sm:px-4 py-8">
+            <Card className="mx-auto w-full max-w-[500px] shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-xl">
+                        Password Protected
+                    </CardTitle>
+
                     <CardDescription>
-                        Enter the password to access the shared files
+                        Enter the password to
+                        access the shared files.
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-4">
-                    {/* Password Input */}
-                    <div className="relative">
-                        <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter password"
+                <CardContent>
+                    <Field>
+                        <InputOTP
+                            maxLength={6}
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") handleSubmit()
-                            }}
-                            className="pr-10"
-                        />
-                        <button
-                            type="button"
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                            onClick={() => setShowPassword(!showPassword)}
+                            onChange={setPassword}
+                            id="otp-verification"
                         >
-                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                        </button>
-                    </div>
+                            <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:text-xl">
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                            </InputOTPGroup>
 
-                    {/* Error */}
-                    {error && (
-                        <p className="text-sm text-destructive">{error}</p>
-                    )}
+                            <InputOTPSeparator />
 
-                    {/* Submit */}
+                            <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:text-xl">
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                            </InputOTPGroup>
+                        </InputOTP>
+
+                        {error && (
+                            <p className="mt-2 text-sm text-destructive">
+                                {error}
+                            </p>
+                        )}
+                    </Field>
+                </CardContent>
+
+                <CardFooter>
                     <Button
+                        type="button"
                         className="w-full"
-                        disabled={!password || isPending}
+                        disabled={
+                            password.length < 6 ||
+                            isPending
+                        }
                         onClick={handleSubmit}
                     >
                         {isPending && (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         )}
-                        Access Files
+
+                        Access
                     </Button>
-                </CardContent>
+                </CardFooter>
             </Card>
         </div>
     )

@@ -10,7 +10,8 @@ const SharePage = () => {
     const { token } = useParams<{ token: string }>()
     const { useGetShare } = useFolder()
     const { data, isLoading, isError } = useGetShare({ token: token! })
-
+    const storedAccess = sessionStorage.getItem(`share_access_${token}`)
+    const cachedData = storedAccess ? JSON.parse(storedAccess) : null
     // Loading
     if (isLoading) {
         return (
@@ -19,11 +20,10 @@ const SharePage = () => {
             </div>
         )
     }
-
     // Error / Invalid token
     if (isError || !data?.success) {
         return (
-            <div className="flex min-h-screen items-center justify-center">
+            <div className="flex min-h-full items-center justify-center">
                 <div className="text-center space-y-3">
                     <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
                         <AlertTriangle className="h-7 w-7 text-destructive" />
@@ -36,9 +36,12 @@ const SharePage = () => {
             </div>
         )
     }
+    if (data.shareType === "private" && cachedData) {
+        return <ShareContent token={token!} allowDownload={cachedData.allowDownload} prefetchedData={cachedData} />
+    }
 
-    // Private → Password Form
-    if (data?.shareType === "private") {
+    // Private — password form
+    if (data.shareType === "private") {
         return <PasswordForm token={token!} />
     }
 

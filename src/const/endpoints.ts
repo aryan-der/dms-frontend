@@ -32,7 +32,7 @@ export const folderEndpoint = {
   downloadItem: "/folders/download-items",
   shareEveryone: "/folders/share",
   getShare: (token: string) => `/get/share/${token}`,
-  shareAccess: (token: string) => `/folders/share/${token}`,
+  shareAccess: (token: string) => `/folders/share/${token}/access`,
 }
 
 export const fileEndpoint = {
