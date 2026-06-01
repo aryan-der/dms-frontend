@@ -202,11 +202,10 @@ export default function useFolder() {
           method: "POST",
           body,
         }),
-      onSuccess: (data) => {
+      onSuccess: () => {
         QueryClient.invalidateQueries({
           queryKey: shareQueryKey.shareEveryOne,
         })
-        toast.success(data?.message)
       },
       onError: (error) => {
         toast.error(error?.message)
@@ -230,11 +229,10 @@ export default function useFolder() {
           method: "POST",
           body,
         }),
-      onSuccess: (data) => {
+      onSuccess: () => {
         QueryClient.invalidateQueries({
           queryKey: shareQueryKey.shareEveryOne,
         })
-        toast.success(data?.message)
       },
       onError: (error) => {
         toast.error(error?.message)

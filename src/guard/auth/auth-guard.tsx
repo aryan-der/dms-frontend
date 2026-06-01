@@ -11,10 +11,13 @@ const AuthGuard = ({ children }: { children: ReactNode }) => {
     const { value: user } = useLocalStorage<UserDataType>(userLoginData)
 
     useEffect(() => {
-        // ✅ Share page હોય તો redirect ન કરો
-
         if (location.pathname.startsWith('/share/')) return;
 
+        // Redirect to login if user goes to register route
+        if (location.pathname === authRoute.register) {
+            navigate(authRoute.register);
+            return;
+        }
         if (!user || !user?.userId) {
             navigate(authRoute.login)
         }

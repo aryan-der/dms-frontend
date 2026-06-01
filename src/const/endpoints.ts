@@ -6,6 +6,10 @@ export const authEndpoint = {
   resetPassword: "/Auth/ResetPassword",
 }
 
+export const userEndPoint = {
+  register: "/user/register",
+}
+
 export const folderEndpoint = {
   // Create a new folder
   addFolder: "/folders",

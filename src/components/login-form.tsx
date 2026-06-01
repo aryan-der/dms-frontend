@@ -2,12 +2,15 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import useAuth from "@/hooks/use-auth"
+import { authRoute } from "@/const/route"
+import { Link } from "react-router-dom"
 export function LoginForm({
   className,
   ...props
@@ -56,6 +59,7 @@ export function LoginForm({
             required
             value={form.email}
             onChange={handleInputChange}
+            className="rounded-lg"
           />
         </Field>
         <Field>
@@ -74,12 +78,17 @@ export function LoginForm({
             type="password"
             required
             value={form.password}
+            placeholder="enter password"
             onChange={handleInputChange}
+            className="rounded-lg"
           />
         </Field>
         <Field>
           <Button type="submit" disabled={isPending}>{isPending ? "Logging in..." : "Login"}</Button>
         </Field>
+        <FieldDescription className="px-6 text-center">
+          Don't have an account? <Link to={authRoute.register}>Register</Link>
+        </FieldDescription>
       </FieldGroup>
     </form>
   )

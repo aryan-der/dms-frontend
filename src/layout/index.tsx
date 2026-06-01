@@ -4,6 +4,7 @@ import Search from "@/app/admin/search/Search"
 import Trash from "@/app/admin/trash/Trash"
 import Users from "@/app/admin/users/Users"
 import Login from "@/app/auth/login/Login"
+import RegisterPage from "@/app/auth/register/Register"
 import UserDashboard from "@/app/user/dashboard/Dashboard"
 import UserFavourite from "@/app/user/favourite/Favourite"
 import UserSearch from "@/app/user/search/Search"
@@ -35,6 +36,7 @@ const Layout = () => {
                 </AuthGuard>
             }>
                 <Route index path={authRoute.login} element={<Login />} />
+                <Route path={authRoute.register} element={<RegisterPage />} />
             </Route>
 
             {/* Admin */}

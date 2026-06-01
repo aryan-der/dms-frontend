@@ -7,10 +7,12 @@ const authBaseRoute = "/auth"
 export const authRoute = {
   base: authBaseRoute,
   login: `${authBaseRoute}/login`,
+  register: `${authBaseRoute}/register`,
 }
 
 export const authChildRoute = {
   login: funcGetChildPath(authRoute.login, authRoute.base),
+  register: funcGetChildPath(authRoute.register, authRoute.base),
 }
 
 const shareBaseRoute = "/share"
