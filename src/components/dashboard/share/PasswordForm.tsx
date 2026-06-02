@@ -121,41 +121,60 @@ const PasswordForm = ({ token }: Props) => {
     }
 
     return (
-        <div className="flex min-h-full items-center justify-center bg-muted/40 px-2 sm:px-4 py-8">
-            <Card className="mx-auto w-full max-w-[500px] shadow-lg">
+        <div className="flex min-h-full items-center justify-center bg-muted/40 px-3 sm:px-4 py-6 sm:py-8">
+            <Card className="w-full max-w-md sm:max-w-lg shadow-lg">
                 <CardHeader>
-                    <CardTitle className="text-xl">
+                    <CardTitle className="text-lg text-center sm:text-xl">
                         Password Protected
                     </CardTitle>
 
-                    <CardDescription>
-                        Enter the password to
-                        access the shared files.
+                    <CardDescription className="text-center">
+                        Enter the password to access the shared files.
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent>
+                <CardContent className="overflow-x-auto">
                     <Field>
-                        <InputOTP
-                            maxLength={6}
-                            value={password}
-                            onChange={setPassword}
-                            id="otp-verification"
-                        >
-                            <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:text-xl">
-                                <InputOTPSlot index={0} />
-                                <InputOTPSlot index={1} />
-                                <InputOTPSlot index={2} />
-                            </InputOTPGroup>
+                        <div className="flex justify-center">
+                            <InputOTP
+                                maxLength={6}
+                                value={password}
+                                onChange={setPassword}
+                                id="otp-verification"
+                            >
+                                <InputOTPGroup
+                                    className="
+                                *:data-[slot=input-otp-slot]:h-12
+                                *:data-[slot=input-otp-slot]:w-10
+                                *:data-[slot=input-otp-slot]:text-lg
+                                sm:*:data-[slot=input-otp-slot]:h-16
+                                sm:*:data-[slot=input-otp-slot]:w-16
+                                sm:*:data-[slot=input-otp-slot]:text-xl
+                            "
+                                >
+                                    <InputOTPSlot index={0} />
+                                    <InputOTPSlot index={1} />
+                                    <InputOTPSlot index={2} />
+                                </InputOTPGroup>
 
-                            <InputOTPSeparator />
+                                <InputOTPSeparator />
 
-                            <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:text-xl">
-                                <InputOTPSlot index={3} />
-                                <InputOTPSlot index={4} />
-                                <InputOTPSlot index={5} />
-                            </InputOTPGroup>
-                        </InputOTP>
+                                <InputOTPGroup
+                                    className="
+                                *:data-[slot=input-otp-slot]:h-12
+                                *:data-[slot=input-otp-slot]:w-10
+                                *:data-[slot=input-otp-slot]:text-lg
+                                sm:*:data-[slot=input-otp-slot]:h-16
+                                sm:*:data-[slot=input-otp-slot]:w-16
+                                sm:*:data-[slot=input-otp-slot]:text-xl
+                            "
+                                >
+                                    <InputOTPSlot index={3} />
+                                    <InputOTPSlot index={4} />
+                                    <InputOTPSlot index={5} />
+                                </InputOTPGroup>
+                            </InputOTP>
+                        </div>
 
                         {error && (
                             <p className="mt-2 text-sm text-destructive">
@@ -165,14 +184,10 @@ const PasswordForm = ({ token }: Props) => {
                     </Field>
                 </CardContent>
 
-                <CardFooter>
+                <CardFooter className="flex justify-end">
                     <Button
                         type="button"
-                        className="w-full"
-                        disabled={
-                            password.length < 6 ||
-                            isPending
-                        }
+                        disabled={password.length < 6 || isPending}
                         onClick={handleSubmit}
                     >
                         {isPending && (

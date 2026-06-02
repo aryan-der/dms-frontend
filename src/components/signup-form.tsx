@@ -8,7 +8,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { authRoute } from "@/const/route"
 import { BsGoogle } from "react-icons/bs"
 import useUser from "@/hooks/use-user"
@@ -27,11 +27,13 @@ export function SignupForm({
 }: React.ComponentProps<"form">) {
   const { useRegister } = useUser()
   const { mutate: registerUser, isPending } = useRegister()
+  const navigate = useNavigate()
 
   const { register, handleSubmit } = useForm<RegisterFormData>()
 
   const onSubmit = (data: RegisterFormData) => {
     registerUser(data)
+    navigate(authRoute.login)
   }
 
   return (

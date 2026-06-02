@@ -20,8 +20,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { adminRoute } from "@/const/route";
 import { BreadcrumbComponent } from "../common/Breadcrumb";
 import Loader from "../common/Loader";
-import { Dialog, DialogContent } from "../ui/dialog";
-import PdfViewer from "../common/pdf-viewer";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import FilePreview from "../common/file-preview";
 
 const DashboardExplorer = () => {
     const { useGetContent } = useFolder();
@@ -40,7 +41,9 @@ const DashboardExplorer = () => {
     const [folderOpen, setFolderOpen] = useState(true);
     const [fileOpen, setFileOpen] = useState(true);
     const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
-
+    const selectedFile = data?.data?.files?.find(
+        (file: any) => file._id === selectedFileId
+    );
     const handleOpenFile = (
         fileId: string
     ) => {
@@ -170,27 +173,35 @@ const DashboardExplorer = () => {
                 </CollapsibleContent>
             </Collapsible>
 
-            <Dialog
+            <Drawer
                 open={!!selectedFileId}
-                onOpenChange={() =>
-                    setSelectedFileId(null)
-                }
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setSelectedFileId(null);
+                    }
+                }}
             >
-                <DialogContent
-                    className="
-         max-w-7xl
-         h-[95vh]
-         p-0
-         overflow-hidden
-      "
-                >
+                <DrawerContent className="min-h-screen">
+                    <div className="flex items-center justify-between border-b px-4 pb-3">
+                        <span className="font-medium text-lg truncate">
+                            {selectedFile?.originalName || "PDF Preview"}
+                        </span>
+                        <button
+                            onClick={() =>
+                                setSelectedFileId(null)
+                            }
+                            className="cursor-pointer hover:scale-105 transition-transform duration-200"
+                        >
+                            <AiOutlineCloseCircle size={26} />
+                        </button>
+                    </div>
                     {selectedFileId && (
-                        <PdfViewer
-                            fileId={selectedFileId}
-                        />
+                        <FilePreview fileId={selectedFileId} mimeType={selectedFile?.mimeType ?? ""} />
                     )}
-                </DialogContent>
-            </Dialog>
+                </DrawerContent>
+            </Drawer>
+
+
         </div>
     );
 };

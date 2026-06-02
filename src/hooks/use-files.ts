@@ -33,13 +33,18 @@ export default function useFile() {
       },
     })
 
-  const useFileViewer = ({ fileId }: { fileId: string | number }) =>
+  const useFileViewer = ({ fileId }: { fileId: string }) =>
     useQuery({
-      queryKey: fileQueryKey.file({ fileId }),
-      queryFn: () =>
-        funcFetch({
-          endPoint: fileEndpoint.viewFile(String(fileId)),
-        }) as Promise<ResTypes<FileType>>,
+      queryKey: ["file-view", fileId],
+      staleTime: 0,
+      enabled: !!fileId,
+      queryFn: async () => {
+        const blob = await funcFetch<Blob>({
+          endPoint: fileEndpoint.viewFile(fileId),
+        })
+
+        return URL.createObjectURL(blob)
+      },
     })
 
   const useUpdateItem = () =>
