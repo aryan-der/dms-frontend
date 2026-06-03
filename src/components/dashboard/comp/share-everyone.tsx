@@ -197,7 +197,7 @@ const ShareEveryoneDialog = ({
         mutate(
             {
                 folderIds: [folder._id],
-                fileIds: [],
+                fileIds: [folder._id],
                 shareType,
                 password,
                 emails: emails.filter(Boolean),

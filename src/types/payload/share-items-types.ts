@@ -10,6 +10,7 @@ export type shareEveryonePayload = {
 
 export interface ShareFile {
   _id: string
+  folderId: string | number
   name: string
   size: number
   mimeType: string
@@ -19,6 +20,7 @@ export interface ShareFile {
 export interface ShareFolder {
   _id: string
   name: string
+  parentFolderId: string | number
 }
 
 export interface ShareInfoResponse {
