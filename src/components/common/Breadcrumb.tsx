@@ -33,30 +33,32 @@ export function BreadcrumbComponent() {
     };
 
     return (
-        <Breadcrumb>
-            <BreadcrumbList>
-                {breadcrumb.map((item, idx) => (
-                    <Fragment key={item.id ?? "root"}>
-                        <BreadcrumbItem>
-                            {idx === lastIdx ? (
-                                <BreadcrumbPage>{item.name}</BreadcrumbPage>
-                            ) : (
-                                <BreadcrumbLink
-                                    href="#"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleClick(item.id);
-                                    }}
-                                >
-                                    {item.name}
-                                </BreadcrumbLink>
-                            )}
-                        </BreadcrumbItem>
+        <div className="-mx-2 px-2 py-2 h-12">
+            <Breadcrumb>
+                <BreadcrumbList>
+                    {breadcrumb.map((item, idx) => (
+                        <Fragment key={item.id ?? "root"}>
+                            <BreadcrumbItem>
+                                {idx === lastIdx ? (
+                                    <BreadcrumbPage>{item.name}</BreadcrumbPage>
+                                ) : (
+                                    <BreadcrumbLink
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleClick(item.id);
+                                        }}
+                                    >
+                                        {item.name}
+                                    </BreadcrumbLink>
+                                )}
+                            </BreadcrumbItem>
 
-                        {idx !== lastIdx && <BreadcrumbSeparator />}
-                    </Fragment>
-                ))}
-            </BreadcrumbList>
-        </Breadcrumb>
+                            {idx !== lastIdx && <BreadcrumbSeparator />}
+                        </Fragment>
+                    ))}
+                </BreadcrumbList>
+            </Breadcrumb>
+        </div>
     );
 }

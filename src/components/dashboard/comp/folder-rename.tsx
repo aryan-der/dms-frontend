@@ -15,14 +15,10 @@ import useFile from "@/hooks/use-files";
 interface RenameItemProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-
     id: string | number;
-
     currentName: string;
-
     type: "FILE" | "FOLDER";
 }
-
 const RenameItem: React.FC<RenameItemProps> = ({
     open,
     onOpenChange,

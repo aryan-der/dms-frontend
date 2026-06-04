@@ -1,33 +1,30 @@
 import type { FileType } from "@/types/data/file-types"
-import React, { useState } from "react"
+import React from "react"
 
 import {
     FiFile,
     FiCheck,
 } from "react-icons/fi"
-
 import DropdownItems from "./comp/dropdown-items"
 
 type FileCardProps = {
-    files?: FileType[]
-    onOpenFile?: (fileId: string) => void
-}
+    files?: FileType[];
+    selectedFiles: string[];
+    onSelectFile: (
+        fileId: string,
+        multi?: boolean
+    ) => void;
+    onOpenFile?: (
+        fileId: string
+    ) => void;
+};
 
 const FileCard: React.FC<FileCardProps> = ({
     files = [],
+    selectedFiles,
+    onSelectFile,
     onOpenFile,
 }) => {
-    const [selectedFiles, setSelectedFiles] = useState<string[]>([])
-
-    const handleSelectFile = (fileId: string) => {
-        setSelectedFiles((prev) => {
-            if (prev.includes(fileId)) {
-                return prev.filter((id) => id !== fileId)
-            }
-
-            return [...prev, fileId]
-        })
-    }
 
     return (
         <div className="flex flex-wrap gap-4">
@@ -37,11 +34,22 @@ const FileCard: React.FC<FileCardProps> = ({
                 return (
                     <div
                         key={file._id}
-                        onClick={() => onOpenFile?.(file._id)}
+                        onClick={(e) => {
+                            onSelectFile(
+                                file._id,
+                                e.ctrlKey || e.metaKey
+                            );
+                        }}
+                        onDoubleClick={() => {
+                            onOpenFile?.(file._id);
+                        }}
                         onContextMenu={(e) => {
-                            e.preventDefault()
+                            e.preventDefault();
 
-                            handleSelectFile(file._id)
+                            onSelectFile(
+                                file._id,
+                                true
+                            );
                         }}
                         className={`group relative flex max-w-[260px] min-w-[220px] cursor-pointer items-center gap-3 rounded-2xl border bg-background px-4 py-3 shadow-sm transition-all duration-200 select-none hover:bg-muted/40 hover:shadow-md ${isSelected
                             ? "border-primary bg-primary/5"
@@ -65,12 +73,11 @@ const FileCard: React.FC<FileCardProps> = ({
                         </div>
 
                         <div
-                            className="flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100"
+                            className="relative top-3 opacity-0 transition-opacity group-hover:opacity-100"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <DropdownItems
                                 folder={file}
-                                onSelectFolder={handleSelectFile}
                             />
                         </div>
                     </div>

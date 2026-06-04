@@ -17,39 +17,13 @@ import {
 } from "react-icons/fi"
 
 import RenameItem from "./folder-rename"
-import type { FolderType } from "@/types/data/folder-types"
-import type { FileType } from "@/types/data/file-types"
 import { useParams } from "react-router-dom"
 import DeleteItemsButton from "./delete-items"
 import { Move } from "lucide-react"
 import MoveItemsButton from "./move-items"
 import useFolder from "@/hooks/use-folder"
 import ShareEveryoneDialog from "./share-everyone"
-
-type SubMenuItem = {
-    label: string
-    icon?: React.ReactNode
-    onClick?: () => void
-}
-
-type MenuItem =
-    | {
-        type: "item"
-        id?: string
-        label: React.ReactNode
-        icon: React.ReactNode
-        right?: string
-        hasSubmenu?: boolean
-        submenuItems?: SubMenuItem[]
-        danger?: boolean
-        onClick?: () => void
-    }
-    | { type: "divider" }
-
-interface DropdownItemsProps {
-    folder: FolderType | FileType
-    onSelectFolder?: (folderId: string) => void
-}
+import type { DropdownItemsProps, MenuItem } from "@/types/data/dropdown-menu-types"
 
 const DropdownItems = ({
     folder,
@@ -57,6 +31,7 @@ const DropdownItems = ({
 }: DropdownItemsProps) => {
     const [open, setOpen] = useState(false)
     const [showRename, setShowRename] = useState(false)
+    const [showDelete, setShowDelete] = useState(false)
     const [showMove, setShowMove] = useState(false)
     const [showShareEveryone, setShowShareEveryone] = useState(false)
     const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null)
@@ -142,15 +117,12 @@ const DropdownItems = ({
             {
                 type: "item",
                 id: "delete",
-                label: (
-                    <DeleteItemsButton
-                        folderIds={isFile ? [] : [folder._id]}
-                        fileIds={isFile ? [folder._id] : []}
-                        parentFolderId={parentFolderId}
-                    />
-                ),
+                label: "Move to Trash",
                 icon: <FiTrash2 size={14} />,
-                right: "Delete",
+                onClick: () => {
+                    setShowDelete(true)
+                },
+                right: "",
                 danger: true,
             },
         ],
@@ -352,6 +324,17 @@ const DropdownItems = ({
                 open={showShareEveryone}
                 onOpenChange={setShowShareEveryone}
                 folder={folder}
+            />
+            <DeleteItemsButton
+                open={showDelete}
+                onOpenChange={setShowDelete}
+                folderIds={isFile ? [] : [folder._id]}
+                fileIds={isFile ? [folder._id] : []}
+                parentFolderId={parentFolderId}
+                onSuccess={() => {
+                    setOpen(false)
+                    setShowDelete(false)
+                }}
             />
 
             <style>{`
