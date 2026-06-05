@@ -26,7 +26,7 @@ import FilePreview from "../common/file-preview";
 import BulkMenuItems from "./comp/bulk-menu-items";
 import type { FileType } from "@/types/data/file-types";
 
-const DashboardExplorer = () => {
+const DocumentsExplorer = () => {
     const { useGetContent } = useFolder();
     const navigate = useNavigate();
 
@@ -270,5 +270,5 @@ const DashboardExplorer = () => {
     );
 };
 
-export default DashboardExplorer;
+export default DocumentsExplorer;
 

@@ -1,8 +1,11 @@
-import React from 'react'
+import DocumentsExplorer from '@/components/dashboard/dashboard-explorer'
 
 const Documents = () => {
     return (
-        <div>Documents</div>
+        <>
+            <h1 className="text-2xl text-center">Manage your Documents</h1>
+            <DocumentsExplorer />
+        </>
     )
 }
 
