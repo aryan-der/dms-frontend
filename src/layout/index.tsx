@@ -1,6 +1,10 @@
+import Audios from "@/app/admin/Audios/Audios"
 import Dashboard from "@/app/admin/dashboard/Dashboard"
+import Documents from "@/app/admin/documents/Documents"
 import Favourite from "@/app/admin/favourite/Favourite"
+import Gallery from "@/app/admin/Gallery/Gallery"
 import Search from "@/app/admin/search/Search"
+import SharedWithMe from "@/app/admin/Shared/SharedWithMe"
 import Trash from "@/app/admin/trash/Trash"
 import Users from "@/app/admin/users/Users"
 import Login from "@/app/auth/login/Login"
@@ -24,11 +28,14 @@ const Layout = () => {
     return (
         <Routes>
             <Route path="/" element={<Navigate to={authRoute.login} />} />
+
+            {/* Share */}
             <Route path={shareRoute.base} element={
                 <ShareRoute />
             }>
                 <Route path={shareChildRoute.share} element={<SharePage />} />
             </Route>
+
             {/* Auth */}
             <Route path={authRoute.base} element={
                 <AuthGuard>
@@ -46,7 +53,12 @@ const Layout = () => {
                 </AdminGuard>
             }>
                 {/* Dashboard */}
+                {/* <Route path={`${adminChildRoute.dashboard}/:parentFolderId?`} element={<Dashboard />} /> */}
                 <Route path={`${adminChildRoute.dashboard}/:parentFolderId?`} element={<Dashboard />} />
+                <Route path={`${adminChildRoute.documents}/:parentFolderId?`} element={<Documents />} />
+                <Route path={`${adminChildRoute.gallery}/:parentFolderId?`} element={<Gallery />} />
+                <Route path={`${adminChildRoute.sharedwithme}/:parentFolderId?`} element={<SharedWithMe />} />
+                <Route path={`${adminChildRoute.audios}/:parentFolderId?`} element={<Audios />} />
                 <Route path={adminChildRoute.users} element={<Users />} />
                 <Route path={adminChildRoute.favourite} element={<Favourite />} />
                 <Route path={adminChildRoute.trash} element={<Trash />} />

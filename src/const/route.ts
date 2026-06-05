@@ -35,6 +35,18 @@ export const adminRoute = {
   dashboard: {
     base: `${adminBase}/dashboard`,
   },
+  documents: {
+    base: `${adminBase}/documents`,
+  },
+  gallery: {
+    base: `${adminBase}/gallery`,
+  },
+  audios: {
+    base: `${adminBase}/audios`,
+  },
+  sharedwithme: {
+    base: `${adminBase}/shared-with-me`,
+  },
   users: {
     base: `${adminBase}/users`,
   },
@@ -51,6 +63,13 @@ export const adminRoute = {
 
 export const adminChildRoute = {
   dashboard: funcGetChildPath(adminRoute.dashboard.base, adminRoute.adminBase),
+  documents: funcGetChildPath(adminRoute.documents.base, adminRoute.adminBase),
+  gallery: funcGetChildPath(adminRoute.gallery.base, adminRoute.adminBase),
+  audios: funcGetChildPath(adminRoute.audios.base, adminRoute.adminBase),
+  sharedwithme: funcGetChildPath(
+    adminRoute.sharedwithme.base,
+    adminRoute.adminBase
+  ),
   users: funcGetChildPath(adminRoute.users.base, adminRoute.adminBase),
   favourite: funcGetChildPath(adminRoute.favourite.base, adminRoute.adminBase),
   trash: funcGetChildPath(adminRoute.trash.base, adminRoute.adminBase),
@@ -63,6 +82,18 @@ export const userRoute = {
   userBase: "/",
   dashboard: {
     base: "/dashboard",
+  },
+  documents: {
+    base: `/documents`,
+  },
+  gallery: {
+    base: `/gallery`,
+  },
+  audios: {
+    base: `/audios`,
+  },
+  sharedwithme: {
+    base: `/shared-with-me`,
   },
   search: {
     base: "/search",
@@ -77,6 +108,13 @@ export const userRoute = {
 
 export const userChildRoute = {
   dashboard: funcGetChildPath(userRoute.dashboard.base, userRoute.userBase),
+  documents: funcGetChildPath(userRoute.documents.base, userRoute.userBase),
+  gallery: funcGetChildPath(userRoute.gallery.base, userRoute.userBase),
+  audios: funcGetChildPath(userRoute.audios.base, userRoute.userBase),
+  sharedwithme: funcGetChildPath(
+    userRoute.sharedwithme.base,
+    userRoute.userBase
+  ),
   search: funcGetChildPath(userRoute.search.base, userRoute.userBase),
   favourite: funcGetChildPath(userRoute.favourite.base, userRoute.userBase),
   trash: funcGetChildPath(userRoute.trash.base, userRoute.userBase),

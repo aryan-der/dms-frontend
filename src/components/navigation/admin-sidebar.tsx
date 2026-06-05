@@ -16,7 +16,7 @@ import { IoHome } from "react-icons/io5";
 import { FaHardDrive } from "react-icons/fa6";
 import { BsStarFill } from "react-icons/bs";
 import { FaTrashRestore } from "react-icons/fa"
-import { BiSolidVideos } from "react-icons/bi";;
+import { FaUsers } from "react-icons/fa";
 import { IoMdPhotos } from "react-icons/io";
 import { adminRoute } from "@/const/route"
 
@@ -36,28 +36,28 @@ const data = {
         },
         {
             name: "Documents",
-            url: "#",
+            url: adminRoute.documents.base,
             icon: FaHardDrive,
         },
         {
-            name: "Photos",
-            url: "#",
+            name: "Gallery",
+            url: adminRoute.gallery.base,
             icon: IoMdPhotos,
         },
         {
-            name: "Videos",
-            url: "#",
-            icon: BiSolidVideos,
-        },
-        {
             name: "Audios",
-            url: "#",
+            url: adminRoute.audios.base,
             icon: MdAudiotrack,
         },
         {
             name: "Shared with me",
-            url: "#",
+            url: adminRoute.sharedwithme.base,
             icon: MdFolderShared,
+        },
+        {
+            name: "Users",
+            url: adminRoute.users.base,
+            icon: FaUsers,
         },
         {
             name: "Favourite",
@@ -84,7 +84,7 @@ function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <GalleryVerticalEnd />
                     </div>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-bold text-md">Document System</span>
+                        <span className="truncate font-bold text-md">Secure Drive</span>
                     </div>
                 </SidebarMenuButton>
             </SidebarHeader>
