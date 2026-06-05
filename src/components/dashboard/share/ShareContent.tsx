@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import {
     Loader2,
     ChevronDown,
@@ -41,22 +41,23 @@ const ShareContent = ({
     const [fileOpen, setFileOpen] = useState(true)
     const [currentFolderId, setCurrentFolderId] = useState<string | null>(null)
     const [selectedFileId, setSelectedFileId] = useState<string | null>(null)
-
     const { useShareAccess } = useFolder()
     const { mutate, isPending } = useShareAccess({ token })
 
-    if (!prefetchedData && !data && typeof window !== "undefined") {
-        mutate(
-            { password: "" },
-            {
-                onSuccess: (res: ShareAccessResponse) => {
-                    if ((res as unknown as { success?: boolean })?.success) {
-                        setData(res)
-                    }
-                },
-            }
-        )
-    }
+    useEffect(() => {
+        if (!prefetchedData && !data) {
+            mutate(
+                { password: "" },
+                {
+                    onSuccess: (res) => {
+                        if (res?.success) {
+                            setData(res)
+                        }
+                    },
+                }
+            )
+        }
+    }, [prefetchedData, data, mutate])
 
     const folders: ShareFolder[] = useMemo(() => data?.folders ?? [], [data?.folders])
     const files: ShareFile[] = useMemo(() => data?.files ?? [], [data?.files])

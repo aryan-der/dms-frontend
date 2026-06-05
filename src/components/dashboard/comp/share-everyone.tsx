@@ -16,15 +16,11 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp"
 
-interface Folder {
-    _id: string
-    [key: string]: unknown
-}
-
 interface ShareEveryoneDialogProps {
     open: boolean
     onOpenChange: (open: boolean) => void
-    folder: Folder
+    folderId: string[]
+    fileId: string[]
 }
 
 interface ShareInput {
@@ -169,7 +165,8 @@ const TagInput = ({
 const ShareEveryoneDialog = ({
     open,
     onOpenChange,
-    folder,
+    folderId,
+    fileId
 }: ShareEveryoneDialogProps) => {
     const { useShareEveryone } = useFolder()
     const { mutate, isPending } = useShareEveryone() as {
@@ -180,15 +177,11 @@ const ShareEveryoneDialog = ({
         isPending: boolean
     }
     const [shareType, setShareType] = useState<"public" | "private">("public")
-
     const [password, setPassword] = useState("")
     const [expiryDays, setExpiryDays] = useState(7)
-
     const [emails, setEmails] = useState<string[]>([])
     // const [phones, setPhones] = useState<string[]>([])
-
     const [shareUrl, setShareUrl] = useState("")
-
     const handleCopy = async () => {
         await navigator.clipboard.writeText(shareUrl)
     }
@@ -196,8 +189,8 @@ const ShareEveryoneDialog = ({
     const handleShare = () => {
         mutate(
             {
-                folderIds: [folder._id],
-                fileIds: [folder._id],
+                folderIds: folderId,
+                fileIds: fileId,
                 shareType,
                 password,
                 emails: emails.filter(Boolean),

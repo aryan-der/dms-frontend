@@ -10,6 +10,11 @@ import { useParams } from 'react-router-dom'
 import DeleteItemsButton from './delete-items'
 import ShareEveryoneDialog from './share-everyone'
 
+// Add minimal dummy objects to satisfy type requirements in subcomponents
+function getFirst<T>(arr: T[]): T | undefined {
+    return arr && arr.length > 0 ? arr[0] : undefined;
+}
+
 const BulkMenuItems = ({
     totalSelected,
     clearSelection,
@@ -24,7 +29,10 @@ const BulkMenuItems = ({
     const folderIds = selectedItems.folders;
     const fileIds = selectedItems.files;
     const itemType = folderIds.length > 0 ? "FOLDER" : "FILE"
-    console.log(selectedItems);
+    const renameId = itemType === "FOLDER"
+        ? getFirst(folderIds)
+        : getFirst(fileIds);
+    const excludeId = getFirst(folderIds);
 
     return (
         <div className="flex sticky top-0 z-30 backdrop-blur">
@@ -57,7 +65,6 @@ const BulkMenuItems = ({
                             fileIds
                         })
                     }}
-
                 />
                 <TooltipAction icon={<FolderInput className="h-3 w-3 z-50" />} label="Move" onClick={() => setShowMove(true)} />
                 <TooltipAction icon={<Trash2 className="h-3 w-3 z-50" />} label="Delete" onClick={() => setShowDelete(true)} />
@@ -70,7 +77,7 @@ const BulkMenuItems = ({
             <RenameItem
                 open={showRename}
                 onOpenChange={setShowRename}
-                id={itemType == "FOLDER" ? folderIds : fileIds}
+                id={renameId ?? ''}
                 currentName={""}
                 type={itemType}
             />
@@ -80,7 +87,7 @@ const BulkMenuItems = ({
                 folderIds={folderIds}
                 fileIds={fileIds}
                 parentFolderId={parentFolderId}
-                excludeId={folderIds}
+                excludeId={excludeId ?? ''}
             />
             <DeleteItemsButton
                 open={showDelete}
@@ -96,7 +103,8 @@ const BulkMenuItems = ({
             <ShareEveryoneDialog
                 open={showShareEveryone}
                 onOpenChange={setshowShareEveryone}
-                folder={selectedItems}
+                folderId={folderIds}
+                fileId={fileIds}
             />
 
         </div>

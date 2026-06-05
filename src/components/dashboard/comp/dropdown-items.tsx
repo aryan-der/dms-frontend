@@ -42,6 +42,10 @@ const DropdownItems = ({
     const isFile = "mimeType" in folder
     const _id = folder?._id
 
+    // Helper to separate folder/file id use, always arrays
+    const folderIds = isFile ? [] : [_id]
+    const fileIds = isFile ? [_id] : []
+
     const menuGroups: MenuItem[][] = [
         [
             {
@@ -51,8 +55,8 @@ const DropdownItems = ({
                 icon: <FiDownload size={14} />,
                 onClick: () => {
                     useDownloadItems.mutate({
-                        folderIds: [folder?._id],
-                        fileIds: [folder?._id],
+                        folderIds,
+                        fileIds,
                     })
                 },
             },
@@ -161,7 +165,7 @@ const DropdownItems = ({
         setOpen((prev) => !prev)
     }
 
-    const itemType = "mimeType" in folder ? "FILE" : "FOLDER"
+    const itemType = isFile ? "FILE" : "FOLDER"
 
     return (
         <div
@@ -305,7 +309,7 @@ const DropdownItems = ({
                 <RenameItem
                     open={showRename}
                     onOpenChange={setShowRename}
-                    id={folder._id}
+                    id={_id}
                     currentName={folder.name}
                     type={itemType}
                 />
@@ -314,22 +318,23 @@ const DropdownItems = ({
             <MoveItemsButton
                 open={showMove}
                 onOpenChange={setShowMove}
-                folderIds={isFile ? [] : [folder._id]}
-                fileIds={isFile ? [folder._id] : []}
+                folderIds={folderIds}
+                fileIds={fileIds}
                 parentFolderId={parentFolderId}
-                excludeId={folder._id}
+                excludeId={_id}
             />
 
             <ShareEveryoneDialog
                 open={showShareEveryone}
                 onOpenChange={setShowShareEveryone}
-                folder={folder}
+                folderId={folderIds}
+                fileId={fileIds}
             />
             <DeleteItemsButton
                 open={showDelete}
                 onOpenChange={setShowDelete}
-                folderIds={isFile ? [] : [folder._id]}
-                fileIds={isFile ? [folder._id] : []}
+                folderIds={folderIds}
+                fileIds={fileIds}
                 parentFolderId={parentFolderId}
                 onSuccess={() => {
                     setOpen(false)
@@ -360,7 +365,6 @@ const DropdownItems = ({
                 }
             `}</style>
         </div>
-
     )
 }
 
