@@ -1,4 +1,4 @@
-import DocumentsExplorer from '@/components/dashboard/dashboard-explorer'
+import DocumentsExplorer from '@/components/dashboard/document-explorer'
 
 const Documents = () => {
     return (

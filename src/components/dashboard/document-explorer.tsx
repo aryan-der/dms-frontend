@@ -25,11 +25,12 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import FilePreview from "../common/file-preview";
 import BulkMenuItems from "./comp/bulk-menu-items";
 import type { FileType } from "@/types/data/file-types";
+import { useSearch } from "@/context/search/search-context";
 
 const DocumentsExplorer = () => {
     const { useGetContent } = useFolder();
     const navigate = useNavigate();
-
+    const { searchTerm } = useSearch()
     const { parentFolderId: routeFolderId } = useParams();
 
     const {
@@ -104,12 +105,25 @@ const DocumentsExplorer = () => {
     };
 
     const handleOpenFolder = (folderId: string) => {
-        navigate(`${adminRoute.dashboard.base}/${folderId}`);
+        navigate(`${adminRoute.documents.base}/${folderId}`);
         clearSelection()
     }
 
     const totalSelected = selectedItems.folders.length + selectedItems.files.length;
 
+    const filteredFolders =
+        data?.data?.folders?.filter((folder) =>
+            folder.name
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+        ) || [];
+
+    const filteredFiles =
+        data?.data?.files?.filter((file) =>
+            file.name
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+        ) || [];
 
     return (
         <div className="relative flex h-[calc(100vh-140px)] flex-col">
@@ -163,7 +177,7 @@ const DocumentsExplorer = () => {
                                     </h2>
 
                                     <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
-                                        {data?.data?.folders?.length || 0}
+                                        {filteredFolders.length || 0}
                                     </span>
                                 </>
                             )}
@@ -178,7 +192,7 @@ const DocumentsExplorer = () => {
 
                     <CollapsibleContent className="pt-4">
                         <FolderCard
-                            folders={data?.data?.folders || []}
+                            folders={filteredFolders || []}
                             selectedFolders={selectedItems.folders}
                             onSelectFolder={handleFolderSelect}
                             onOpenFolder={handleOpenFolder}
@@ -216,7 +230,7 @@ const DocumentsExplorer = () => {
                             </h2>
 
                             <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
-                                {data?.data?.files?.length || 0}
+                                {filteredFiles?.length || 0}
                             </span>
                         </div>
 
@@ -229,7 +243,7 @@ const DocumentsExplorer = () => {
 
                     <CollapsibleContent className="pt-4">
                         <FileCard
-                            files={data?.data?.files || []}
+                            files={filteredFiles || []}
                             selectedFiles={selectedItems.files}
                             onSelectFile={handleFileSelect}
                             onOpenFile={handleOpenFile}

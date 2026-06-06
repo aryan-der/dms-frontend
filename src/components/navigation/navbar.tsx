@@ -15,8 +15,10 @@ import {
 import { SidebarTrigger } from "../ui/sidebar";
 import { Input } from "../ui/input";
 import CreateUploadButtons from "../dashboard/comp/create-upload-buttons";
+import { useSearch } from "@/context/search/search-context";
 
 const Navbar = () => {
+    const { searchTerm, setSearchTerm } = useSearch()
     return (
         <div className="sticky top-0 z-20 flex h-14 w-full shrink-0 items-center justify-between border-b bg-background px-3">
             <div className="flex items-center gap-3 w-full">
@@ -27,7 +29,10 @@ const Navbar = () => {
                     <span className="border-l h-7 mr-2"></span>
                     <Input
                         type="text"
-                        value=""
+                        value={searchTerm}
+                        onChange={(e) =>
+                            setSearchTerm(e.target.value)
+                        }
                         placeholder="Here Search Folder & Files..."
                         className="bg-accent border-none px-3 mx-5 font-medium text-base cursor-default text-foreground w-full focus:ring-0 focus:outline-none"
                     />
