@@ -1,6 +1,5 @@
 import useFile from "@/hooks/use-files";
 import React from "react";
-import { useParams } from "react-router-dom";
 
 type UploadFileProps = {
     children: React.ReactNode;
